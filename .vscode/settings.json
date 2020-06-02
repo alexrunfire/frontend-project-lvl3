@@ -1,8 +1,0 @@
-{
-    "editor.formatOnSave": true,
-    "eslint.format.enable": true,
-    "eslint.lintTask.enable": true,
-    "prettier.singleQuote": true,
-    "prettier.requireConfig": true,
-    "prettier.useTabs": true
-}
