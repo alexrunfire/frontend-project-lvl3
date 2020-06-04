@@ -2,7 +2,7 @@
   "name": "frontend-project-lvl3",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.js",
+  "private": true,
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "prepublishOnly": "npm run build"
