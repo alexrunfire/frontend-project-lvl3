@@ -1,3 +1,3 @@
-// import 'bootstrap';
-
-export default () => {};
+export default () => {
+  document.querySelector('.container').innerHTML = 'Flex!';
+};
