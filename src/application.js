@@ -60,7 +60,7 @@ export default () => {
     watchedButton.status = true;
     axios.get(state.form.url)
       .then((answer) => {
-        console.log(answer);
+        console.log(answer.data);
       })
       .catch((err) => {
         console.log(err);
