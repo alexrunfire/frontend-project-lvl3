@@ -23,10 +23,12 @@ const component = () => {
         inputField.classList.remove('is-invalid');
       })
       .catch((err) => {
-        const [error] = err.errors;
-        inputField.classList.add('is-invalid');
-        feedback.classList.add('text-danger');
-        feedback.textContent = error;
+        if (err) {
+          const [error] = err.errors;
+          inputField.classList.add('is-invalid');
+          feedback.classList.add('text-danger');
+          feedback.textContent = error;
+        }
       });
   });
   inputField.addEventListener('input', (e) => {
