@@ -9,7 +9,7 @@ const schema = yup.object().shape({
 const feedback = document.querySelector('.feedback');
 const [form] = document.forms;
 const inputField = form.querySelector('.form-control');
-const submitButton = form.querySelector('input[type="submit"]');
+const submitButton = form.querySelector('button[type="submit"]');
 
 const validate = (url) => {
   try {
