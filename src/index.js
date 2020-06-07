@@ -33,6 +33,8 @@ const component = () => {
     if (errors.length === 0) {
       submitButton.disabled = false;
       inputField.classList.remove('is-invalid');
+      feedback.classList.remove('text-danger');
+      feedback.textContent = '';
     } else {
       const [error] = errors;
       inputField.classList.add('is-invalid');
