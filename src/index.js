@@ -19,6 +19,7 @@ const component = () => {
   const watchedState = onChange(state.form, (_path, url) => {
     schema.validate({ url })
       .then(() => {
+        console.log('flex');
         submitButton.disabled = false;
         inputField.classList.remove('is-invalid');
       })
