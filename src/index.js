@@ -26,6 +26,7 @@ const component = () => {
 
   const watchedState = onChange(state.form, (_path, url) => {
     const errors = validate(url);
+    console.log(errors);
     if (errors.length === 0) {
       submitButton.disabled = false;
       inputField.classList.remove('is-invalid');
