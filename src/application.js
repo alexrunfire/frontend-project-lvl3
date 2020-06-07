@@ -62,8 +62,7 @@ export default () => {
         console.log(answer.data);
       })
       .catch((err) => {
-        const error = new Error(err);
-        console.log(error.message);
+        console.log(err.response);
       });
   });
 };
