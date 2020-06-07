@@ -2,6 +2,8 @@ import * as yup from 'yup';
 
 const onChange = require('on-change');
 
+const axios = require('axios');
+
 const schema = yup.object().shape({
   url: yup.string().required().url(),
 });
@@ -25,17 +27,24 @@ export default () => {
     form: {
       url: '',
     },
+    submitButton: {
+      status: false,
+    },
   };
 
-  const watchedState = onChange(state.form, (_path, url) => {
+  const watchedButton = onChange(state.submitButton, (_path, value) => {
+    submitButton.disabled = value;
+  });
+  const watchedUrl = onChange(state.form, (_path, url) => {
     const errors = validate(url);
     console.log(errors);
     if (errors.length === 0) {
-      submitButton.disabled = false;
+      watchedButton.status = false;
       inputField.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');
       feedback.textContent = '';
     } else {
+      watchedButton.status = true;
       const [error] = errors;
       inputField.classList.add('is-invalid');
       feedback.classList.add('text-danger');
@@ -44,6 +53,17 @@ export default () => {
   });
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
-    watchedState.url = e.target.value;
+    watchedUrl.url = e.target.value;
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    watchedButton.status = true;
+    axios.get(state.form.url)
+      .then((answer) => {
+        console.log(answer);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 };
