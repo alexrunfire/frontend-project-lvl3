@@ -37,8 +37,8 @@ export default () => {
   });
   const watchedUrl = onChange(state.form, (_path, url) => {
     const errors = validate(url);
-    console.log(errors);
     if (errors.length === 0) {
+      console.log('flex');
       watchedButton.status = false;
       inputField.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');
