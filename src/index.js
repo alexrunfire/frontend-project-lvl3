@@ -13,7 +13,7 @@ const submitButton = form.querySelector('input[type="submit"]');
 
 const validate = (url) => {
   schema.validate({ url })
-    .then(() => [])
+    .then(() => ([]))
     .catch((err) => err.errors);
 };
 
