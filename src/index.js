@@ -12,9 +12,12 @@ const inputField = form.querySelector('.form-control');
 const submitButton = form.querySelector('input[type="submit"]');
 
 const validate = (url) => {
-  schema.validate({ url })
-    .then(() => ([]))
-    .catch((err) => err.errors);
+  try {
+    schema.validateSync({ url });
+    return [];
+  } catch (e) {
+    return e.errors;
+  }
 };
 
 const component = () => {
