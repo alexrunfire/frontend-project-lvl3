@@ -63,7 +63,9 @@ export default () => {
     watchedButton.status = true;
     axios.get(`https://${proxy.url()}/${state.form.url}`)
       .then((response) => {
-        console.log(response);
+        const domparser = new DOMParser();
+        const doc = domparser.parseFromString(response, 'text/html');
+        console.log(doc);
       })
       .catch((err) => {
         console.log(err.message);
