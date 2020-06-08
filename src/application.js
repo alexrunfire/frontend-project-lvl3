@@ -62,7 +62,7 @@ export default () => {
         console.log(answer.data);
       })
       .catch((err) => {
-        console.log(err.request);
+        console.log(err.toJSON());
       });
   });
 };
