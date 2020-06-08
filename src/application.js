@@ -57,7 +57,7 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedButton.status = true;
-    axios.get(state.form.url, { validateStatus: (status) => console.log(status) })
+    axios.get(state.form.url)
       .then((answer) => {
         console.log(answer.data);
       })
