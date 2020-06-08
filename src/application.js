@@ -4,6 +4,10 @@ const onChange = require('on-change');
 
 const axios = require('axios');
 
+const proxy = {
+  url: () => 'cors-anywhere.herokuapp.com',
+};
+
 const schema = yup.object().shape({
   url: yup.string().required().url(),
 });
@@ -57,12 +61,12 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedButton.status = true;
-    axios.get(state.form.url)
-      .then((answer) => {
-        console.log(answer.data);
+    axios.get(`https://${proxy.url()}/${state.form.url}`)
+      .then((response) => {
+        console.log(response);
       })
       .catch((err) => {
-        console.log(err.response);
+        console.log(err);
       });
   });
 };
