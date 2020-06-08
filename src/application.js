@@ -64,7 +64,7 @@ export default () => {
     axios.get(`https://${proxy.url()}/${state.form.url}`)
       .then((response) => {
         const domparser = new DOMParser();
-        const doc = domparser.parseFromString(response, 'text/html');
+        const doc = domparser.parseFromString(response.data, 'text/html');
         console.log(doc);
       })
       .catch((err) => {
