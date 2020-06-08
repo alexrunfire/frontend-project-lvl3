@@ -57,12 +57,12 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedButton.status = true;
-    axios.get(state.form.url)
+    axios.get(state.form.url, { validateStatus: (status) => console.log(status) })
       .then((answer) => {
         console.log(answer.data);
       })
       .catch((err) => {
-        console.log(err.toJSON());
+        console.log(err.request);
       });
   });
 };
