@@ -14,7 +14,7 @@ export default (doc) => {
       items,
     };
   } catch (e) {
-    console.error(e);
+    console.log(e.message);
     return e;
   }
 };
