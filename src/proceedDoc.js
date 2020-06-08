@@ -14,7 +14,7 @@ export default (doc) => {
       items,
     };
   } catch (e) {
-    console.log('flex');
+    console.error(e);
     return e;
   }
 };
