@@ -14,6 +14,6 @@ export default (doc) => {
       items,
     };
   } catch (e) {
-    return e;
+    return e.lineNumber;
   }
 };
