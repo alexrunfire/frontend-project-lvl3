@@ -1,4 +1,8 @@
 import * as yup from 'yup';
+// import _ from 'lodash';
+import parse from './parse';
+import proceedDoc from './proceedDoc';
+
 
 const onChange = require('on-change');
 
@@ -63,9 +67,9 @@ export default () => {
     watchedButton.status = true;
     axios.get(`https://${proxy.url()}/${state.form.url}`)
       .then((response) => {
-        const domparser = new DOMParser();
-        const doc = domparser.parseFromString(response.data, 'text/html');
-        console.log(doc);
+        const doc = parse(response);
+        const rssData = proceedDoc(doc);
+        console.log(rssData);
       })
       .catch((err) => {
         console.log(err.message);
