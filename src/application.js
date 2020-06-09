@@ -42,6 +42,7 @@ export default () => {
       textDanger: null,
       textSuccess: null,
     },
+    rssUrls: [],
   };
 
   const watchedForm = onChange(state.form, (path, value) => {
@@ -85,6 +86,17 @@ export default () => {
       watchedFeedback.textDanger = true;
     }
   };
+  const proceedRss = (rssData, url) => {
+    if (rssData instanceof Error) {
+      watchedFeedback.value = rssData.message;
+      watchedFeedback.textDanger = true;
+    } else {
+      watchedFeedback.textSuccess = true;
+      watchedFeedback.value = 'RSS has been successfully added';
+      watchedForm.emptyInput = true;
+      state.rssUrls.push(url);
+    }
+  };
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
     watchedFeedback.textSuccess = false;
@@ -94,24 +106,25 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedForm.submitButton = true;
-    axios.get(`https://${proxy.url()}/${inputField.value}`)
-      .then((response) => {
-        watchedForm.submitButton = false;
-        const doc = parse(response);
-        const rssData = proceedDoc(doc);
-        if (rssData instanceof Error) {
-          watchedFeedback.value = rssData.message;
+    const url = `https://${proxy.url()}/${inputField.value}`;
+    if (state.rssUrls.includes(url)) {
+      watchedForm.submitButton = false;
+      watchedForm.validStatus = false;
+      watchedFeedback.textDanger = true;
+      watchedFeedback.value = 'Rss already exists';
+    } else {
+      axios.get(url)
+        .then((response) => {
+          watchedForm.submitButton = false;
+          const doc = parse(response);
+          const data = proceedDoc(doc);
+          proceedRss(data, url);
+        })
+        .catch((err) => {
+          watchedForm.submitButton = false;
+          watchedFeedback.value = err.message;
           watchedFeedback.textDanger = true;
-        } else {
-          watchedFeedback.textSuccess = true;
-          watchedFeedback.value = 'RSS has been successfully added';
-          watchedForm.emptyInput = true;
-        }
-      })
-      .catch((err) => {
-        watchedForm.submitButton = false;
-        watchedFeedback.value = err.message;
-        watchedFeedback.textDanger = true;
-      });
+        });
+    }
   });
 };
