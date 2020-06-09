@@ -92,7 +92,7 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedForm.submitButton = true;
-    axios.get(`https://${proxy.url()}/${state.form.url}`)
+    axios.get(`https://${proxy.url()}/${inputField.value}`)
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
