@@ -98,15 +98,18 @@ export default () => {
         const doc = parse(response);
         const rssData = proceedDoc(doc);
         if (rssData instanceof Error) {
+          console.log('wrong data');
           watchedFeedback.value = rssData.message;
           watchedFeedback.textDanger = true;
         } else {
+          console.log('norm');
           watchedFeedback.textSuccess = true;
           watchedFeedback.value = 'RSS has been successfully added';
           watchedForm.emptyInput = true;
         }
       })
       .catch((err) => {
+        console.log('wrong site');
         watchedForm.submitButton = false;
         watchedFeedback.value = err.message;
         watchedFeedback.textDanger = true;
