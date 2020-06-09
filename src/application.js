@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-// import _ from 'lodash';
 import parse from './parse';
 import proceedDoc from './proceedDoc';
 
@@ -97,6 +96,21 @@ export default () => {
       state.rssUrls.push(url);
     }
   };
+  const makeGetRequest = (url) => {
+    axios.get(url)
+      .then((response) => {
+        watchedForm.submitButton = false;
+        const doc = parse(response);
+        console.log(doc);
+        const data = proceedDoc(doc);
+        proceedRss(data, url);
+      })
+      .catch((err) => {
+        watchedForm.submitButton = false;
+        watchedFeedback.value = err.message;
+        watchedFeedback.textDanger = true;
+      });
+  };
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
     watchedFeedback.textSuccess = false;
@@ -113,18 +127,7 @@ export default () => {
       watchedFeedback.textDanger = true;
       watchedFeedback.value = 'Rss already exists';
     } else {
-      axios.get(url)
-        .then((response) => {
-          watchedForm.submitButton = false;
-          const doc = parse(response);
-          const data = proceedDoc(doc);
-          proceedRss(data, url);
-        })
-        .catch((err) => {
-          watchedForm.submitButton = false;
-          watchedFeedback.value = err.message;
-          watchedFeedback.textDanger = true;
-        });
+      makeGetRequest(url);
     }
   });
 };
