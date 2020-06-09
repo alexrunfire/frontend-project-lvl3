@@ -60,10 +60,8 @@ export default () => {
     if (path === 'value') {
       feedbackField.textContent = value;
     } else if (path === 'textDanger' && value) {
-      feedbackField.classList.remove('text-success');
       feedbackField.classList.add('text-danger');
     } else if (path === 'textDanger' && !value) {
-      feedbackField.classList.remove('text-success');
       feedbackField.classList.remove('text-danger');
     } else if (path === 'textSuccess') {
       feedbackField.classList.add('text-success');
