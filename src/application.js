@@ -51,7 +51,7 @@ export default () => {
       inputField.classList.add('is-invalid');
     } else if (path === 'validStatus' && value) {
       inputField.classList.remove('is-invalid');
-    } else if (path === 'emptyInput') {
+    } else if (path === 'emptyInput' && value) {
       inputField.value = '';
     }
   });
@@ -60,10 +60,12 @@ export default () => {
     if (path === 'value') {
       feedbackField.textContent = value;
     } else if (path === 'textDanger' && value) {
+      feedbackField.classList.remove('text-success');
       feedbackField.classList.add('text-danger');
     } else if (path === 'textDanger' && !value) {
+      feedbackField.classList.remove('text-success');
       feedbackField.classList.remove('text-danger');
-    } else if (path === 'textSuccess') {
+    } else if (path === 'textSuccess' && value) {
       feedbackField.classList.add('text-success');
     }
   });
@@ -85,6 +87,8 @@ export default () => {
   };
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
+    watchedFeedback.textSuccess = false;
+    watchedForm.emptyInput = false;
     validateUrl(e.target.value);
   });
   form.addEventListener('submit', (e) => {
@@ -96,18 +100,15 @@ export default () => {
         const doc = parse(response);
         const rssData = proceedDoc(doc);
         if (rssData instanceof Error) {
-          console.log('wrong data');
           watchedFeedback.value = rssData.message;
           watchedFeedback.textDanger = true;
         } else {
-          console.log('norm');
           watchedFeedback.textSuccess = true;
           watchedFeedback.value = 'RSS has been successfully added';
           watchedForm.emptyInput = true;
         }
       })
       .catch((err) => {
-        console.log('wrong site');
         watchedForm.submitButton = false;
         watchedFeedback.value = err.message;
         watchedFeedback.textDanger = true;
