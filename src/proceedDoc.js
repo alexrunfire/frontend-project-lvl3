@@ -14,7 +14,6 @@ export default (doc) => {
       items,
     };
   } catch (e) {
-    const err = new Error(e);
-    return err;
+    return e instanceof Error;
   }
 };
