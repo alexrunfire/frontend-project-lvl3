@@ -108,7 +108,7 @@ export default () => {
   const checkDoc = (doc, url) => {
     const parserError = doc.querySelector('parsererror');
     console.log(parserError);
-    if (!parserError) {
+    if (parserError) {
       watchedFeedback.value = parserError.textContent;
       watchedFeedback.textDanger = true;
     } else {
