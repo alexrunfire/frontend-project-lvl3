@@ -19,6 +19,8 @@ const feedbackField = document.querySelector('.feedback');
 const [form] = document.forms;
 const inputField = form.querySelector('input');
 const submitButton = form.querySelector('button');
+const rssItems = document.querySelector('.rss-items');
+const rssLinks = document.querySelector('.rss-links');
 
 const validate = (url) => {
   try {
@@ -42,6 +44,10 @@ export default () => {
       textSuccess: null,
     },
     rssUrls: [],
+    rssRows: {
+      heads: null,
+      items: null,
+    },
   };
 
   const watchedForm = onChange(state.form, (path, value) => {
@@ -69,10 +75,20 @@ export default () => {
       feedbackField.classList.add('text-success');
     }
   });
-
-  const addRss = (rss) => {
-
-  };
+  const watchedRows = onChange(state.rssRows, (path, value) => {
+    if (path === 'heads') {
+      const externalDiv = document.createElement('div');
+      const a = document.createElement('a');
+      a.setAttribute('href', value.headLink);
+      a.textContent = value.title;
+      const internalDiv = document.createElement('div');
+      internalDiv.textContent = value.description;
+      externalDiv.append(a, internalDiv);
+      rssItems.append(externalDiv);
+    } else {
+      console.log();
+    }
+  });
 
   const validateUrl = (url) => {
     const errors = validate(url);
@@ -89,12 +105,15 @@ export default () => {
       watchedFeedback.textDanger = true;
     }
   };
-  const proceedRss = (rssData, url) => {
-    if (rssData instanceof Error) {
-      watchedFeedback.value = rssData.message;
+  const checkDoc = (doc, url) => {
+    const parserError = doc.querySelector('parsererror');
+    if (!parserError) {
+      watchedFeedback.value = parserError.textContent;
       watchedFeedback.textDanger = true;
     } else {
-      addRss(rssData);
+      const rssData = proceedDoc(doc);
+      watchedRows.heads = rssData.head;
+      watchedRows.items = rssData.items;
       watchedFeedback.textSuccess = true;
       watchedFeedback.value = 'RSS has been successfully added';
       watchedForm.emptyInput = true;
@@ -106,10 +125,7 @@ export default () => {
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
-        console.log(doc);
-        const data = proceedDoc(doc);
-        console.log(data);
-        proceedRss(data, url);
+        checkDoc(doc, url);
       })
       .catch((err) => {
         watchedForm.submitButton = false;
