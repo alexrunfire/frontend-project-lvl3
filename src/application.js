@@ -106,7 +106,9 @@ export default () => {
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
+        console.log(doc);
         const data = proceedDoc(doc);
+        console.log(data);
         proceedRss(data, url);
       })
       .catch((err) => {
