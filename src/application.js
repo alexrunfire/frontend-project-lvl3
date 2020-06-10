@@ -112,6 +112,7 @@ export default () => {
       watchedFeedback.textDanger = true;
     } else {
       const rssData = proceedDoc(doc);
+      console.log(rssData);
       watchedRows.heads = rssData.head;
       watchedRows.items = rssData.items;
       watchedFeedback.textSuccess = true;
@@ -125,6 +126,7 @@ export default () => {
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
+        console.log(doc);
         checkDoc(doc, url);
       })
       .catch((err) => {
