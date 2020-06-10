@@ -77,16 +77,21 @@ export default () => {
   });
   const watchedRows = onChange(state.rssRows, (path, value) => {
     if (path === 'heads') {
-      const externalDiv = document.createElement('div');
+      const div = document.createElement('div');
       const a = document.createElement('a');
       a.setAttribute('href', value.headLink);
-      a.textContent = `${value.title} ${value.description}`;
-      const internalDiv = document.createElement('div');
-      internalDiv.textContent = value.description;
-      externalDiv.append(a, internalDiv);
-      rssItems.append(externalDiv);
+      a.textContent = `${value.title} (${value.description})`;
+      div.append(a);
+      rssItems.prepend(div);
     } else {
-      console.log();
+      value.forEach((item) => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.setAttribute('href', item.link);
+        a.textContent = item.itemTitle;
+        div.append(a);
+        rssLinks.prepend(div);
+      });
     }
   });
 
