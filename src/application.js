@@ -70,6 +70,10 @@ export default () => {
     }
   });
 
+  const addRss = (rss) => {
+
+  };
+
   const validateUrl = (url) => {
     const errors = validate(url);
     if (errors.length === 0) {
@@ -90,6 +94,7 @@ export default () => {
       watchedFeedback.value = rssData.message;
       watchedFeedback.textDanger = true;
     } else {
+      addRss(rssData);
       watchedFeedback.textSuccess = true;
       watchedFeedback.value = 'RSS has been successfully added';
       watchedForm.emptyInput = true;
@@ -101,9 +106,7 @@ export default () => {
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
-        console.log(doc);
         const data = proceedDoc(doc);
-        console.log(data);
         proceedRss(data, url);
       })
       .catch((err) => {
