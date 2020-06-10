@@ -80,7 +80,7 @@ export default () => {
       const externalDiv = document.createElement('div');
       const a = document.createElement('a');
       a.setAttribute('href', value.headLink);
-      a.textContent = value.title;
+      a.textContent = `${value.title} ${value.description}`;
       const internalDiv = document.createElement('div');
       internalDiv.textContent = value.description;
       externalDiv.append(a, internalDiv);
@@ -107,13 +107,11 @@ export default () => {
   };
   const checkDoc = (doc, url) => {
     const parserError = doc.querySelector('parsererror');
-    console.log(parserError);
     if (parserError) {
       watchedFeedback.value = parserError.textContent;
       watchedFeedback.textDanger = true;
     } else {
       const rssData = proceedDoc(doc);
-      console.log(rssData);
       watchedRows.heads = rssData.head;
       watchedRows.items = rssData.items;
       watchedFeedback.textSuccess = true;
@@ -127,7 +125,6 @@ export default () => {
       .then((response) => {
         watchedForm.submitButton = false;
         const doc = parse(response);
-        console.log(doc);
         checkDoc(doc, url);
       })
       .catch((err) => {
