@@ -6,7 +6,7 @@ export default (doc) => {
       const itemTitle = item.querySelector('title').textContent;
       console.log(itemTitle);
       console.log(typeof itemTitle);
-      const pubDate = item.querySelector('pubdate').textContent;
+      const pubDate = item.querySelector('pubDate').textContent;
       const link = item.querySelector('link').textContent;
       return [...acc, { itemTitle, pubDate, link }];
     }, []);
