@@ -3,7 +3,7 @@ export default (doc) => {
     const title = doc.querySelector('title').textContent;
     const description = doc.querySelector('description').textContent;
     const items = [...doc.querySelectorAll('item')].reduce((acc, item) => {
-      const itemTitle = item.querySelector('title').firstChild.data;
+      const itemTitle = item.querySelector('title').childNodes[0].data;
       const pubDate = item.querySelector('pubdate').textContent;
       const link = item.querySelector('link').textContent;
       return [...acc, { itemTitle, pubDate, link }];
