@@ -1,5 +1,5 @@
 export default (response) => {
   const domparser = new DOMParser();
-  const xmlDoc = domparser.parseFromString(response.data, 'application/xml');
-  return domparser.parseFromString(response.data, 'application/xhtml+xml');
+  const xmlDoc = domparser.parseFromString(response.data, 'text/html');
+  return domparser.parseFromString(xmlDoc, 'text/xml');
 };
