@@ -84,6 +84,7 @@ export default () => {
       div.append(a);
       rssItems.prepend(div);
     } else {
+      rssLinks.innerHTML = '';
       [...currentValue, ...previousValue].forEach((item) => {
         const div = document.createElement('div');
         const a = document.createElement('a');
