@@ -79,6 +79,7 @@ const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) 
       const div = document.createElement('div');
       const a = document.createElement('a');
       a.setAttribute('href', item.link);
+      a.classList.add('text-info');
       a.textContent = item.itemTitle;
       div.append(a);
       rssLinks.append(div);
