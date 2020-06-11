@@ -50,6 +50,7 @@ export default () => {
       value: null,
       textDanger: null,
       textSuccess: null,
+      rssExists: null,
     },
     rssUrls: [],
     rssRows: {
@@ -81,6 +82,9 @@ export default () => {
       feedbackField.classList.remove('text-danger');
     } else if (path === 'textSuccess' && value) {
       feedbackField.classList.add('text-success');
+      feedbackField.textContent = i18next.t('rssLoaded');
+    } else if (path === 'rssExists' && value) {
+      feedbackField.textContent = i18next.t('rssExists');
     }
   });
   const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
@@ -91,7 +95,7 @@ export default () => {
       a.textContent = `${currentValue.title} (${currentValue.description})`;
       div.append(a);
       rssItems.prepend(div);
-    } else {
+    } else if (path === 'items') {
       rssLinks.innerHTML = '';
       [...currentValue, ...previousValue].forEach((item) => {
         const div = document.createElement('div');
@@ -129,7 +133,6 @@ export default () => {
       watchedRows.heads = rssData.head;
       watchedRows.items = rssData.items;
       watchedFeedback.textSuccess = true;
-      watchedFeedback.value = i18next.t('rssLoaded');
       watchedForm.emptyInput = true;
       state.rssUrls.push(url);
     }
@@ -151,6 +154,7 @@ export default () => {
     e.preventDefault();
     watchedFeedback.textSuccess = false;
     watchedForm.emptyInput = false;
+    watchedFeedback.rssExists = false;
     validateUrl(e.target.value);
   });
   form.addEventListener('submit', (e) => {
@@ -161,7 +165,7 @@ export default () => {
       watchedForm.submitButton = false;
       watchedForm.validStatus = false;
       watchedFeedback.textDanger = true;
-      watchedFeedback.value = i18next.t('rssExists');
+      watchedFeedback.rssExists = true;
     } else {
       makeGetRequest(url);
     }
