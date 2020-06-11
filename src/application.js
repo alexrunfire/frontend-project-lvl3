@@ -51,6 +51,7 @@ export default () => {
       textDanger: null,
       textSuccess: null,
       rssExists: null,
+      empty: null,
     },
     rssUrls: [],
     rssRows: {
@@ -85,6 +86,8 @@ export default () => {
       feedbackField.textContent = i18next.t('rssLoaded');
     } else if (path === 'rssExists' && value) {
       feedbackField.textContent = i18next.t('rssExists');
+    } else if (path === 'empty' && value) {
+      feedbackField.textContent = '';
     }
   });
   const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
@@ -113,7 +116,7 @@ export default () => {
     if (errors.length === 0) {
       watchedForm.submitButton = false;
       watchedForm.validStatus = true;
-      watchedFeedback.value = '';
+      watchedFeedback.empty = true;
       watchedFeedback.textDanger = false;
     } else {
       watchedForm.submitButton = true;
@@ -152,9 +155,10 @@ export default () => {
   };
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
-    watchedFeedback.textSuccess = false;
     watchedForm.emptyInput = false;
+    watchedFeedback.textSuccess = false;
     watchedFeedback.rssExists = false;
+    watchedFeedback.empty = false;
     validateUrl(e.target.value);
   });
   form.addEventListener('submit', (e) => {
