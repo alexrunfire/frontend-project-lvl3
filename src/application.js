@@ -46,7 +46,7 @@ export default () => {
     rssUrls: [],
     rssRows: {
       heads: null,
-      items: null,
+      items: [],
     },
   };
 
@@ -75,16 +75,16 @@ export default () => {
       feedbackField.classList.add('text-success');
     }
   });
-  const watchedRows = onChange(state.rssRows, (path, value) => {
+  const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
     if (path === 'heads') {
       const div = document.createElement('div');
       const a = document.createElement('a');
-      a.setAttribute('href', value.headLink);
-      a.textContent = `${value.title} (${value.description})`;
+      a.setAttribute('href', currentValue.headLink);
+      a.textContent = `${currentValue.title} (${currentValue.description})`;
       div.append(a);
       rssItems.prepend(div);
     } else {
-      value.forEach((item) => {
+      [...previousValue, ...currentValue].forEach((item) => {
         const div = document.createElement('div');
         const a = document.createElement('a');
         a.setAttribute('href', item.link);
