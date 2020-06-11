@@ -1,6 +1,8 @@
 import * as yup from 'yup';
+import i18next from 'i18next';
 import parse from './parse';
 import proceedDoc from './proceedDoc';
+import resources from './en';
 
 
 const onChange = require('on-change');
@@ -32,6 +34,12 @@ const validate = (url) => {
 };
 
 export default () => {
+  i18next.init({
+    lng: 'en',
+    debug: true,
+    resources,
+  });
+
   const state = {
     form: {
       submitButton: null,
@@ -121,7 +129,7 @@ export default () => {
       watchedRows.heads = rssData.head;
       watchedRows.items = rssData.items;
       watchedFeedback.textSuccess = true;
-      watchedFeedback.value = 'RSS has been successfully added';
+      watchedFeedback.value = i18next.t('rssLoaded');
       watchedForm.emptyInput = true;
       state.rssUrls.push(url);
     }
@@ -153,7 +161,7 @@ export default () => {
       watchedForm.submitButton = false;
       watchedForm.validStatus = false;
       watchedFeedback.textDanger = true;
-      watchedFeedback.value = 'Rss already exists';
+      watchedFeedback.value = i18next.t('rssExists');
     } else {
       makeGetRequest(url);
     }
