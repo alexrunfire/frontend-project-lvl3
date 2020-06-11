@@ -84,13 +84,13 @@ export default () => {
       div.append(a);
       rssItems.prepend(div);
     } else {
-      [...previousValue, ...currentValue].forEach((item) => {
+      [...currentValue, ...previousValue].forEach((item) => {
         const div = document.createElement('div');
         const a = document.createElement('a');
         a.setAttribute('href', item.link);
         a.textContent = item.itemTitle;
         div.append(a);
-        rssLinks.prepend(div);
+        rssLinks.append(div);
       });
     }
   });
