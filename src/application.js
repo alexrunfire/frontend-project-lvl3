@@ -46,7 +46,7 @@ const checkDoc = (doc, url) => {
     watchedFeedback.textDanger = true;
   } else {
     const { head, items } = proceedDoc(doc);
-    watchedRows.items = items;
+    watchedRows.items.unshift(...items);
     if (!rssUrls.includes(url)) {
       watchedRows.heads = head;
       watchedFeedback.textSuccess = true;

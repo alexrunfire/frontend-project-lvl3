@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { differenceBy } from 'lodash';
 import resources from './en';
 
 const onChange = require('on-change');
@@ -31,13 +32,13 @@ const state = {
   },
   rssRows: {
     heads: null,
-    items: null,
+    items: [],
   },
 };
 
-const makeItems = (value) => {
+const makeItems = (currentValue, previousValue) => {
   if (rssLinks.childNodes.length === 0) {
-    value.forEach((item) => {
+    currentValue.forEach((item) => {
       const div = document.createElement('div');
       const a = document.createElement('a');
       a.setAttribute('href', item.link);
@@ -48,12 +49,14 @@ const makeItems = (value) => {
     });
   } else {
     const { firstChild } = rssLinks;
-    value.forEach((item) => {
+    const newItems = differenceBy(currentValue, previousValue, 'id');
+    newItems.forEach((item) => {
+      const { link, itemTitle } = item;
       const div = document.createElement('div');
       const a = document.createElement('a');
-      a.setAttribute('href', item.link);
+      a.setAttribute('href', link);
       a.classList.add('text-info');
-      a.textContent = item.itemTitle;
+      a.textContent = itemTitle;
       div.append(a);
       firstChild.before(div);
     });
@@ -90,16 +93,16 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
     feedbackField.textContent = '';
   }
 });
-const watchedRows = onChange(state.rssRows, (path, value) => {
+const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
   if (path === 'heads') {
     const div = document.createElement('div');
     const a = document.createElement('a');
-    a.setAttribute('href', value.headLink);
-    a.textContent = `${value.title} (${value.description})`;
+    a.setAttribute('href', currentValue.headLink);
+    a.textContent = `${currentValue.title} (${currentValue.description})`;
     div.append(a);
     rssItems.prepend(div);
   } else if (path === 'items') {
-    makeItems(value);
+    makeItems(currentValue, previousValue);
   }
 });
 export {
