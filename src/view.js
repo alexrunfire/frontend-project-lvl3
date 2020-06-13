@@ -31,7 +31,7 @@ const state = {
   },
   rssRows: {
     heads: null,
-    items: [],
+    items: null,
   },
 };
 

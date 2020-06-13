@@ -47,7 +47,7 @@ const checkDoc = (doc, url) => {
   } else {
     const rssData = proceedDoc(doc);
     watchedRows.heads = rssData.head;
-    watchedRows.items.unshift(...rssData.items);
+    watchedRows.items = rssData.items;
     watchedFeedback.textSuccess = true;
     watchedForm.emptyInput = true;
     rssUrls.push(url);
