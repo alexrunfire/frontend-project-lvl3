@@ -50,7 +50,8 @@ const makeItems = (currentValue, previousValue) => {
   } else {
     const { firstChild } = rssLinks;
     const newItems = differenceBy(currentValue, previousValue, 'id');
-    console.log(newItems);
+    console.log(previousValue);
+    console.log(currentValue);
     newItems.forEach((item) => {
       const { link, itemTitle } = item;
       const div = document.createElement('div');
