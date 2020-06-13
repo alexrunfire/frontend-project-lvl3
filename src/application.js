@@ -45,12 +45,14 @@ const checkDoc = (doc, url) => {
     watchedFeedback.value = parserError.textContent;
     watchedFeedback.textDanger = true;
   } else {
-    const rssData = proceedDoc(doc);
-    watchedRows.heads = rssData.head;
-    watchedRows.items = rssData.items;
-    watchedFeedback.textSuccess = true;
-    watchedForm.emptyInput = true;
-    rssUrls.push(url);
+    const { head, items } = proceedDoc(doc);
+    watchedRows.items = items;
+    if (!rssUrls.includes(url)) {
+      watchedRows.heads = head;
+      watchedFeedback.textSuccess = true;
+      watchedForm.emptyInput = true;
+      rssUrls.push(url);
+    }
   }
 };
 const makeGetRequest = (url) => {
@@ -64,6 +66,11 @@ const makeGetRequest = (url) => {
       watchedForm.submitButton = false;
       watchedFeedback.value = err.message;
       watchedFeedback.textDanger = true;
+    })
+    .then(() => {
+      if (rssUrls.includes(url)) {
+        setTimeout(() => makeGetRequest(url), 5000);
+      }
     });
 };
 export default () => {
