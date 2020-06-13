@@ -35,6 +35,31 @@ const state = {
   },
 };
 
+const makeItems = (value) => {
+  if (rssLinks.childNodes.length === 0) {
+    value.forEach((item) => {
+      const div = document.createElement('div');
+      const a = document.createElement('a');
+      a.setAttribute('href', item.link);
+      a.classList.add('text-info');
+      a.textContent = item.itemTitle;
+      div.append(a);
+      rssLinks.append(div);
+    });
+  } else {
+    const { firstChild } = rssLinks;
+    value.forEach((item) => {
+      const div = document.createElement('div');
+      const a = document.createElement('a');
+      a.setAttribute('href', item.link);
+      a.classList.add('text-info');
+      a.textContent = item.itemTitle;
+      div.append(a);
+      firstChild.before(div);
+    });
+  }
+};
+
 const watchedForm = onChange(state.form, (path, value) => {
   if (path === 'submitButton') {
     submitButton.disabled = value;
@@ -74,16 +99,7 @@ const watchedRows = onChange(state.rssRows, (path, value) => {
     div.append(a);
     rssItems.prepend(div);
   } else if (path === 'items') {
-    rssLinks.innerHTML = '';
-    value.forEach((item) => {
-      const div = document.createElement('div');
-      const a = document.createElement('a');
-      a.setAttribute('href', item.link);
-      a.classList.add('text-info');
-      a.textContent = item.itemTitle;
-      div.append(a);
-      rssLinks.append(div);
-    });
+    makeItems(value);
   }
 });
 export {
