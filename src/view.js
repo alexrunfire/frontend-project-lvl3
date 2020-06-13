@@ -65,7 +65,7 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
     feedbackField.textContent = '';
   }
 });
-const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
+const watchedRows = onChange(state.rssRows, (path, currentValue) => {
   if (path === 'heads') {
     const div = document.createElement('div');
     const a = document.createElement('a');
@@ -75,7 +75,7 @@ const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) 
     rssItems.prepend(div);
   } else if (path === 'items') {
     rssLinks.innerHTML = '';
-    [...currentValue, ...previousValue].forEach((item) => {
+    currentValue.forEach((item) => {
       const div = document.createElement('div');
       const a = document.createElement('a');
       a.setAttribute('href', item.link);

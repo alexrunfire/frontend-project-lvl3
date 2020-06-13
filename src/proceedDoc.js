@@ -5,9 +5,8 @@ export default (doc) => {
     const headLink = doc.querySelector('link').textContent;
     const items = [...doc.querySelectorAll('item')].reduce((acc, item) => {
       const itemTitle = item.querySelector('title').textContent;
-      const pubDate = item.querySelector('pubDate').textContent;
       const link = item.querySelector('link').textContent;
-      return [...acc, { itemTitle, pubDate, link }];
+      return [...acc, { itemTitle, link }];
     }, []);
     return {
       head: {
