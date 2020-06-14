@@ -1,5 +1,3 @@
-import { uniqueId } from 'lodash';
-
 export default (doc) => {
   try {
     const title = doc.querySelector('title').textContent;
@@ -8,10 +6,8 @@ export default (doc) => {
     const items = [...doc.querySelectorAll('item')].reduce((acc, item) => {
       const itemTitle = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
-      const itemDescription = item.querySelector('description').textContent;
-      return [...acc, {
-        itemTitle, link, id: uniqueId(), itemDescription,
-      }];
+      const guid = item.querySelector('guid').textContent;
+      return [...acc, { itemTitle, link, guid }];
     }, []);
     return {
       head: {

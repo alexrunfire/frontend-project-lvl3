@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { differenceBy } from 'lodash';
+import { uniqBy, differenceBy } from 'lodash';
 import resources from './en';
 
 const onChange = require('on-change');
@@ -49,9 +49,8 @@ const makeItems = (currentValue, previousValue) => {
     });
   } else {
     const { firstChild } = rssLinks;
-    const newItems = differenceBy(currentValue, previousValue, 'id');
-    console.log(previousValue);
-    console.log(currentValue);
+    const currentUniqItems = uniqBy(currentValue, 'guid');
+    const newItems = differenceBy(currentUniqItems, previousValue, 'guid');
     newItems.forEach((item) => {
       const { link, itemTitle } = item;
       const div = document.createElement('div');
