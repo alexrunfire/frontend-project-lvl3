@@ -51,6 +51,7 @@ const getPrevArticles = (previousValue, currentItemUrl) => {
 const makeItems = (currentValue, previousValue) => {
   const { currentItemUrl, articlesList } = currentValue;
   const currentArticles = articlesList[currentItemUrl];
+  console.log(currentArticles);
   if (rssLinks.childNodes.length === 0) {
     currentArticles.forEach((article) => {
       const { articleLink, articleTitle } = article;
