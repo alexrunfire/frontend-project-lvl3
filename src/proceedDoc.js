@@ -8,7 +8,10 @@ export default (doc) => {
     const items = [...doc.querySelectorAll('item')].reduce((acc, item) => {
       const itemTitle = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
-      return [...acc, { itemTitle, link, id: uniqueId() }];
+      const itemDescription = item.querySelector('description').textContent;
+      return [...acc, {
+        itemTitle, link, id: uniqueId(), itemDescription,
+      }];
     }, []);
     return {
       head: {

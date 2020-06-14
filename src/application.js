@@ -60,6 +60,7 @@ const makeGetRequest = (url) => {
     .then((response) => {
       watchedForm.submitButton = false;
       const doc = parse(response);
+      console.log(doc);
       checkDoc(doc, url);
     })
     .catch((err) => {
