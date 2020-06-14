@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { uniqBy, differenceBy } from 'lodash';
+import { differenceBy } from 'lodash';
 import resources from './en';
 
 const onChange = require('on-change');
@@ -31,33 +31,48 @@ const state = {
     empty: null,
   },
   rssRows: {
-    heads: null,
-    items: [],
+    item: null,
+    articles: {
+      currentItemUrl: null,
+      articlesList: {},
+    },
   },
 };
 
+const getPrevArticles = (previousValue, currentItemUrl) => {
+  const { articlesList } = previousValue;
+  const prevArticles = articlesList[currentItemUrl];
+  if (!prevArticles) {
+    return [];
+  }
+  return prevArticles;
+};
+
 const makeItems = (currentValue, previousValue) => {
+  const { currentItemUrl, articlesList } = currentValue;
+  const currentArticles = articlesList[currentItemUrl];
   if (rssLinks.childNodes.length === 0) {
-    currentValue.forEach((item) => {
+    currentArticles.forEach((article) => {
+      const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
       const a = document.createElement('a');
-      a.setAttribute('href', item.link);
+      a.setAttribute('href', articleLink);
       a.classList.add('text-info');
-      a.textContent = item.itemTitle;
+      a.textContent = articleTitle;
       div.append(a);
       rssLinks.append(div);
     });
   } else {
     const { firstChild } = rssLinks;
-    const currentUniqItems = uniqBy(currentValue, 'id');
-    const newItems = differenceBy(currentUniqItems, previousValue, 'id');
-    newItems.forEach((item) => {
-      const { link, itemTitle } = item;
+    const previousAricles = getPrevArticles(previousValue, currentItemUrl);
+    const newArticles = differenceBy(currentArticles, previousAricles, 'id');
+    newArticles.forEach((article) => {
+      const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
       const a = document.createElement('a');
-      a.setAttribute('href', link);
+      a.setAttribute('href', articleLink);
       a.classList.add('text-info');
-      a.textContent = itemTitle;
+      a.textContent = articleTitle;
       div.append(a);
       firstChild.before(div);
     });
@@ -95,15 +110,15 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
   }
 });
 const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
-  if (path === 'heads') {
-    const { headLink, title, description } = currentValue;
+  if (path === 'item') {
+    const { itemLink, itemTitle, description } = currentValue;
     const div = document.createElement('div');
     const a = document.createElement('a');
-    a.setAttribute('href', headLink);
-    a.textContent = `${title} (${description})`;
+    a.setAttribute('href', itemLink);
+    a.textContent = `${itemTitle} (${description})`;
     div.append(a);
     rssItems.prepend(div);
-  } else if (path === 'items') {
+  } else if (path === 'articles') {
     makeItems(currentValue, previousValue);
   }
 });

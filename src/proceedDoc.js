@@ -1,21 +1,21 @@
 export default (doc) => {
   try {
-    const title = doc.querySelector('title').textContent;
+    const itemTitle = doc.querySelector('title').textContent;
     const description = doc.querySelector('description').textContent;
-    const headLink = doc.querySelector('link').textContent;
-    const items = [...doc.querySelectorAll('item')].reduce((acc, item) => {
-      const itemTitle = item.querySelector('title').textContent;
-      const link = item.querySelector('link').textContent;
-      const id = item.querySelector('guid').textContent;
-      return [...acc, { itemTitle, link, id }];
+    const itemLink = doc.querySelector('link').textContent;
+    const articles = [...doc.querySelectorAll('item')].reduce((acc, article) => {
+      const articleTitle = article.querySelector('title').textContent;
+      const aticleLink = article.querySelector('link').textContent;
+      const id = article.querySelector('guid').textContent;
+      return [...acc, { articleTitle, aticleLink, id }];
     }, []);
     return {
-      head: {
-        title,
+      item: {
+        itemTitle,
         description,
-        headLink,
+        itemLink,
       },
-      items,
+      articles,
     };
   } catch (e) {
     return e;

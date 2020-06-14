@@ -45,10 +45,11 @@ const checkDoc = (doc, url) => {
     watchedFeedback.value = parserError.textContent;
     watchedFeedback.textDanger = true;
   } else {
-    const { head, items } = proceedDoc(doc);
-    watchedRows.items.unshift(...items);
+    const { item, articles } = proceedDoc(doc);
+    watchedRows.articles.currentItemUrl = url;
+    watchedRows.articles.articlesList[url] = articles;
     if (!rssUrls.includes(url)) {
-      watchedRows.heads = head;
+      watchedRows.item = item;
       watchedFeedback.textSuccess = true;
       watchedForm.emptyInput = true;
       rssUrls.push(url);
@@ -60,7 +61,6 @@ const makeGetRequest = (url) => {
     .then((response) => {
       watchedForm.submitButton = false;
       const doc = parse(response);
-      console.log(doc);
       checkDoc(doc, url);
     })
     .catch((err) => {
