@@ -49,8 +49,8 @@ const makeItems = (currentValue, previousValue) => {
     });
   } else {
     const { firstChild } = rssLinks;
-    const currentUniqItems = uniqBy(currentValue, 'guid');
-    const newItems = differenceBy(currentUniqItems, previousValue, 'guid');
+    const currentUniqItems = uniqBy(currentValue, 'id');
+    const newItems = differenceBy(currentUniqItems, previousValue, 'id');
     newItems.forEach((item) => {
       const { link, itemTitle } = item;
       const div = document.createElement('div');
@@ -96,10 +96,11 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
 });
 const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
   if (path === 'heads') {
+    const { headLink, title, description } = currentValue;
     const div = document.createElement('div');
     const a = document.createElement('a');
-    a.setAttribute('href', currentValue.headLink);
-    a.textContent = `${currentValue.title} (${currentValue.description})`;
+    a.setAttribute('href', headLink);
+    a.textContent = `${title} (${description})`;
     div.append(a);
     rssItems.prepend(div);
   } else if (path === 'items') {
