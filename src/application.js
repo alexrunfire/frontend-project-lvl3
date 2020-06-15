@@ -56,8 +56,7 @@ const checkDoc = (doc, url) => {
   }
 };
 const makeGetRequest = (url) => {
-  axios.get({
-    url,
+  axios.get(url, {
     timeout: 5000,
   })
     .then((response) => {
