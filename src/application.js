@@ -50,7 +50,6 @@ const checkDoc = (doc, url) => {
       watchedRows.item = item;
       watchedFeedback.textSuccess = !watchedFeedback.textSuccess;
       watchedForm.emptyInput = !watchedForm.emptyInput;
-      watchedForm.submitButton = true;
       rssUrls.push(url);
     }
   }
