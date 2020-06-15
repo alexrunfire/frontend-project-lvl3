@@ -58,6 +58,7 @@ const makeItems = (currentValue, previousValue) => {
   const newArticles = findNewArticles(currentValue, previousValue);
   console.log(newArticles);
   if (rssLinks.childNodes.length === 0) {
+    console.log('1');
     newArticles.forEach((article) => {
       const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
@@ -71,6 +72,7 @@ const makeItems = (currentValue, previousValue) => {
   } else {
     const { firstChild } = rssLinks;
     newArticles.forEach((article) => {
+      console.log('2');
       const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
       const a = document.createElement('a');
