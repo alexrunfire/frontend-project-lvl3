@@ -48,7 +48,7 @@ const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
     const previousArticles = getPreviousArticles(previousValue, key);
     const newArticles = _.differenceBy(currentArticles, previousArticles, 'id');
     if (!_.isEmpty(newArticles)) {
-      return [...acc, newArticles];
+      return newArticles;
     }
     return acc;
   }, []);
