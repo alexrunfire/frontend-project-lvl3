@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { differenceBy } from 'lodash';
+import _ from 'lodash';
 import resources from './en';
 
 const onChange = require('on-change');
@@ -32,28 +32,31 @@ const state = {
   },
   rssRows: {
     item: null,
-    articles: {
-      currentItemUrl: null,
-      articlesList: {},
-    },
+    articles: {},
   },
 };
 
-const getPrevArticles = (previousValue, currentItemUrl) => {
-  const { articlesList } = previousValue;
-  const prevArticles = articlesList[currentItemUrl];
-  if (!prevArticles) {
-    return [];
+const getPreviousArticles = (object, key) => {
+  if (_.has(object, key)) {
+    return object[key];
   }
-  return prevArticles;
+  return [];
 };
 
+const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
+  (acc, currentArticles, key) => {
+    const previousArticles = getPreviousArticles(previousValue, key);
+    const newArticles = _.differenceBy(currentArticles, previousArticles, 'id');
+    if (!_.isEmpty(newArticles)) {
+      return [...acc, newArticles];
+    }
+    return acc;
+  }, []);
+
 const makeItems = (currentValue, previousValue) => {
-  const { currentItemUrl, articlesList } = currentValue;
-  const currentArticles = articlesList[currentItemUrl];
-  console.log(currentArticles);
+  const newArticles = findNewArticles(currentValue, previousValue);
   if (rssLinks.childNodes.length === 0) {
-    currentArticles.forEach((article) => {
+    newArticles.forEach((article) => {
       const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
       const a = document.createElement('a');
@@ -65,8 +68,6 @@ const makeItems = (currentValue, previousValue) => {
     });
   } else {
     const { firstChild } = rssLinks;
-    const previousAricles = getPrevArticles(previousValue, currentItemUrl);
-    const newArticles = differenceBy(currentArticles, previousAricles, 'id');
     newArticles.forEach((article) => {
       const { articleLink, articleTitle } = article;
       const div = document.createElement('div');
