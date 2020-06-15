@@ -29,8 +29,8 @@ const validateUrl = (url) => {
   if (errors.length === 0) {
     watchedForm.submitButton = false;
     watchedForm.validStatus = true;
-    watchedFeedback.empty = true;
-    watchedFeedback.textDanger = false;
+    watchedFeedback.empty = !watchedFeedback.empty;
+    // watchedFeedback.textDanger = false;
   } else {
     watchedForm.submitButton = true;
     watchedForm.validStatus = false;
@@ -49,8 +49,8 @@ const checkDoc = (doc, url) => {
     watchedRows.articles = { ...watchedRows.articles, [url]: articles };
     if (!rssUrls.includes(url)) {
       watchedRows.item = item;
-      watchedFeedback.textSuccess = true;
-      watchedForm.emptyInput = true;
+      watchedFeedback.textSuccess = !watchedFeedback.textSuccess;
+      watchedForm.emptyInput = !watchedForm.emptyInput;
       rssUrls.push(url);
     }
   }
@@ -60,16 +60,15 @@ const makeGetRequest = (url) => {
     timeout: 5000,
   })
     .then((response) => {
-      watchedForm.submitButton = false;
       const doc = parse(response);
       checkDoc(doc, url);
     })
     .catch((err) => {
-      watchedForm.submitButton = false;
       watchedFeedback.value = err.message;
       watchedFeedback.textDanger = true;
     })
     .then(() => {
+      watchedForm.submitButton = false;
       if (rssUrls.includes(url)) {
         setTimeout(() => makeGetRequest(url), 5000);
       }
@@ -78,10 +77,6 @@ const makeGetRequest = (url) => {
 export default () => {
   inputField.addEventListener('input', (e) => {
     e.preventDefault();
-    watchedForm.emptyInput = false;
-    watchedFeedback.textSuccess = false;
-    watchedFeedback.rssExists = false;
-    watchedFeedback.empty = false;
     validateUrl(e.target.value);
   });
   form.addEventListener('submit', (e) => {
@@ -92,7 +87,7 @@ export default () => {
       watchedForm.submitButton = false;
       watchedForm.validStatus = false;
       watchedFeedback.textDanger = true;
-      watchedFeedback.rssExists = true;
+      watchedFeedback.rssExists = !watchedFeedback.rssExists;
     } else {
       makeGetRequest(url);
     }

@@ -54,37 +54,22 @@ const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
   }, []);
 
 const makeItems = (currentValue, previousValue) => {
-  console.log(currentValue);
   const newArticles = findNewArticles(currentValue, previousValue);
-  console.log(newArticles);
-  console.log(rssLinks.children);
-  console.log(rssLinks.children.length);
-  if (rssLinks.children.length === 0) {
-    console.log('1');
-    newArticles.forEach((article) => {
-      const { articleLink, articleTitle } = article;
-      const div = document.createElement('div');
-      const a = document.createElement('a');
-      a.setAttribute('href', articleLink);
-      a.classList.add('text-info');
-      a.textContent = articleTitle;
-      div.append(a);
+  newArticles.forEach((article) => {
+    const { articleLink, articleTitle } = article;
+    const div = document.createElement('div');
+    const a = document.createElement('a');
+    a.setAttribute('href', articleLink);
+    a.classList.add('text-info');
+    a.textContent = articleTitle;
+    div.append(a);
+    if (rssLinks.children.length === 0) {
       rssLinks.append(div);
-    });
-  } else {
-    const { firstChild } = rssLinks;
-    newArticles.forEach((article) => {
-      console.log('2');
-      const { articleLink, articleTitle } = article;
-      const div = document.createElement('div');
-      const a = document.createElement('a');
-      a.setAttribute('href', articleLink);
-      a.classList.add('text-info');
-      a.textContent = articleTitle;
-      div.append(a);
+    } else {
+      const { firstChild } = rssLinks;
       firstChild.before(div);
-    });
-  }
+    }
+  });
 };
 
 const watchedForm = onChange(state.form, (path, value) => {
@@ -94,7 +79,7 @@ const watchedForm = onChange(state.form, (path, value) => {
     inputField.classList.add('is-invalid');
   } else if (path === 'validStatus' && value) {
     inputField.classList.remove('is-invalid');
-  } else if (path === 'emptyInput' && value) {
+  } else if (path === 'emptyInput') {
     inputField.value = '';
   }
 });
@@ -103,18 +88,18 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
   if (path === 'value') {
     feedbackField.textContent = value;
   } else if (path === 'textDanger' && value) {
-    feedbackField.classList.remove('text-success');
+    // feedbackField.classList.remove('text-success');
     feedbackField.classList.add('text-danger');
   } else if (path === 'textDanger' && !value) {
-    feedbackField.classList.remove('text-success');
+    // feedbackField.classList.remove('text-success');
     feedbackField.classList.remove('text-danger');
-  } else if (path === 'textSuccess' && value) {
-    feedbackField.classList.remove('text-danger');
+  } else if (path === 'textSuccess') {
+    // feedbackField.classList.remove('text-danger');
     feedbackField.classList.add('text-success');
     feedbackField.textContent = i18next.t('rssLoaded');
-  } else if (path === 'rssExists' && value) {
+  } else if (path === 'rssExists') {
     feedbackField.textContent = i18next.t('rssExists');
-  } else if (path === 'empty' && value) {
+  } else if (path === 'empty') {
     feedbackField.textContent = '';
   }
 });
