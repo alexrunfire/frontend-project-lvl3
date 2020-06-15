@@ -52,23 +52,31 @@ const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
     return acc;
   }, []);
 
+const makeElement = (article) => {
+  const { articleLink, articleTitle } = article;
+  const div = document.createElement('div');
+  const a = document.createElement('a');
+  a.setAttribute('href', articleLink);
+  a.classList.add('text-info');
+  a.textContent = articleTitle;
+  div.append(a);
+  return div;
+};
+
 const makeItems = (currentValue, previousValue) => {
   const newArticles = findNewArticles(currentValue, previousValue);
-  newArticles.forEach((article) => {
-    const { articleLink, articleTitle } = article;
-    const div = document.createElement('div');
-    const a = document.createElement('a');
-    a.setAttribute('href', articleLink);
-    a.classList.add('text-info');
-    a.textContent = articleTitle;
-    div.append(a);
-    if (rssLinks.children.length === 0) {
-      rssLinks.append(div);
-    } else {
-      const { firstChild } = rssLinks;
-      firstChild.before(div);
-    }
-  });
+  if (rssLinks.children.length === 0) {
+    newArticles.forEach((article) => {
+      const element = makeElement(article);
+      rssLinks.append(element);
+    });
+  } else {
+    const { firstChild } = rssLinks;
+    newArticles.forEach((article) => {
+      const element = makeElement(article);
+      firstChild.before(element);
+    });
+  }
 };
 
 const watchedForm = onChange(state.form, (path, value) => {
