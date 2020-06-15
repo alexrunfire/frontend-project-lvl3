@@ -58,6 +58,7 @@ const makeItems = (currentValue, previousValue) => {
   const newArticles = findNewArticles(currentValue, previousValue);
   console.log(newArticles);
   console.log(rssLinks.children);
+  console.log(rssLinks.children.length);
   if (rssLinks.children.length === 0) {
     console.log('1');
     newArticles.forEach((article) => {
