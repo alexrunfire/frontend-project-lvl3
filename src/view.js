@@ -103,6 +103,7 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
     feedbackField.classList.remove('text-success');
     feedbackField.classList.remove('text-danger');
   } else if (path === 'textSuccess' && value) {
+    feedbackField.classList.remove('text-danger');
     feedbackField.classList.add('text-success');
     feedbackField.textContent = i18next.t('rssLoaded');
   } else if (path === 'rssExists' && value) {
