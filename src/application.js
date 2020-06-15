@@ -29,21 +29,20 @@ const validateUrl = (url) => {
   if (errors.length === 0) {
     watchedForm.submitButton = false;
     watchedForm.validStatus = true;
-    watchedFeedback.empty = !watchedFeedback.empty;
-    // watchedFeedback.textDanger = false;
+    watchedFeedback.value = '';
   } else {
     watchedForm.submitButton = true;
     watchedForm.validStatus = false;
     const [error] = errors;
     watchedFeedback.value = error;
-    watchedFeedback.textDanger = true;
+    watchedFeedback.textDanger = !watchedFeedback.textDanger;
   }
 };
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
     watchedFeedback.value = parserError.textContent;
-    watchedFeedback.textDanger = true;
+    watchedFeedback.textDanger = !watchedFeedback.textDanger;
   } else {
     const { item, articles } = proceedDoc(doc);
     watchedRows.articles = { ...watchedRows.articles, [url]: articles };
@@ -65,7 +64,7 @@ const makeGetRequest = (url) => {
     })
     .catch((err) => {
       watchedFeedback.value = err.message;
-      watchedFeedback.textDanger = true;
+      watchedFeedback.textDanger = !watchedFeedback.textDanger;
     })
     .then(() => {
       watchedForm.submitButton = false;
@@ -86,7 +85,7 @@ export default () => {
     if (rssUrls.includes(url)) {
       watchedForm.submitButton = false;
       watchedForm.validStatus = false;
-      watchedFeedback.textDanger = true;
+      watchedFeedback.textDanger = !watchedFeedback.textDanger;
       watchedFeedback.rssExists = !watchedFeedback.rssExists;
     } else {
       makeGetRequest(url);

@@ -28,7 +28,6 @@ const state = {
     textDanger: null,
     textSuccess: null,
     rssExists: null,
-    empty: null,
   },
   rssRows: {
     item: null,
@@ -87,20 +86,15 @@ const watchedForm = onChange(state.form, (path, value) => {
 const watchedFeedback = onChange(state.feedback, (path, value) => {
   if (path === 'value') {
     feedbackField.textContent = value;
-  } else if (path === 'textDanger' && value) {
-    // feedbackField.classList.remove('text-success');
+  } else if (path === 'textDanger') {
+    feedbackField.classList.remove('text-success');
     feedbackField.classList.add('text-danger');
-  } else if (path === 'textDanger' && !value) {
-    // feedbackField.classList.remove('text-success');
-    feedbackField.classList.remove('text-danger');
   } else if (path === 'textSuccess') {
-    // feedbackField.classList.remove('text-danger');
+    feedbackField.classList.remove('text-danger');
     feedbackField.classList.add('text-success');
     feedbackField.textContent = i18next.t('rssLoaded');
   } else if (path === 'rssExists') {
     feedbackField.textContent = i18next.t('rssExists');
-  } else if (path === 'empty') {
-    feedbackField.textContent = '';
   }
 });
 const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
