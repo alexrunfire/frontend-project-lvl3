@@ -8,7 +8,7 @@ import {
 
 const rssUrls = [];
 const proxy = {
-  url: () => 'cors-proxy.taskcluster.net',
+  url: () => 'cors-anywhere.herokuapp.com',
 };
 
 const schema = yup.object().shape({
