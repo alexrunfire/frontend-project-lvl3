@@ -43,11 +43,11 @@ const checkDoc = (doc, url) => {
     watchedFeedback.textDanger = !watchedFeedback.textDanger;
   } else {
     const {
-      title, description, link, articles,
+      title, description, link, items,
     } = parseRss(doc);
-    watchedRows.articles = { ...watchedRows.articles, [url]: articles };
+    watchedRows.items = { ...watchedRows.items, [url]: items };
     if (!state.rssUrls.includes(url)) {
-      watchedRows.item = { title, description, link };
+      watchedRows.head = { title, description, link };
       watchedFeedback.textSuccess = !watchedFeedback.textSuccess;
       watchedForm.emptyInput = !watchedForm.emptyInput;
       state.rssUrls.push(url);

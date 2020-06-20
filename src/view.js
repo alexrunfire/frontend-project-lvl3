@@ -24,8 +24,8 @@ const state = {
     rssExists: null,
   },
   rssRows: {
-    item: null,
-    articles: {},
+    head: null,
+    items: {},
   },
   rssUrls: [],
 };
@@ -43,18 +43,18 @@ const getPreviousArticles = (object, key) => {
   return [];
 };
 
-const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
-  (acc, currentArticles, key) => {
-    const previousArticles = getPreviousArticles(previousValue, key);
-    const newArticles = _.differenceBy(currentArticles, previousArticles, 'guid');
-    if (!_.isEmpty(newArticles)) {
-      return newArticles;
+const findNewItems = (currentValue, previousValue) => _.reduce(currentValue,
+  (acc, currentItems, key) => {
+    const previousItems = getPreviousArticles(previousValue, key);
+    const newItems = _.differenceBy(currentItems, previousItems, 'guid');
+    if (!_.isEmpty(newItems)) {
+      return newItems;
     }
     return acc;
   }, []);
 
-const makeElement = (article) => {
-  const { link, title } = article;
+const makeElement = (item) => {
+  const { link, title } = item;
   const div = document.createElement('div');
   const a = document.createElement('a');
   a.setAttribute('href', link);
@@ -65,16 +65,16 @@ const makeElement = (article) => {
 };
 
 const makeItems = (currentValue, previousValue) => {
-  const newArticles = findNewArticles(currentValue, previousValue);
+  const newItems = findNewItems(currentValue, previousValue);
   if (rssLinks.children.length === 0) {
-    newArticles.forEach((article) => {
-      const element = makeElement(article);
+    newItems.forEach((item) => {
+      const element = makeElement(item);
       rssLinks.append(element);
     });
   } else {
     const { firstChild } = rssLinks;
-    newArticles.forEach((article) => {
-      const element = makeElement(article);
+    newItems.forEach((item) => {
+      const element = makeElement(item);
       firstChild.before(element);
     });
   }
@@ -106,7 +106,7 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
   }
 });
 const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
-  if (path === 'item') {
+  if (path === 'head') {
     const { title, description, link } = currentValue;
     const div = document.createElement('div');
     const a = document.createElement('a');
@@ -114,7 +114,7 @@ const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) 
     a.textContent = `${title} (${description})`;
     div.append(a);
     rssItems.prepend(div);
-  } else if (path === 'articles') {
+  } else if (path === 'items') {
     makeItems(currentValue, previousValue);
   }
 });
