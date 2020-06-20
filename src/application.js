@@ -1,12 +1,10 @@
 import * as yup from 'yup';
 import axios from 'axios';
-import parse from './parse';
-import proceedDoc from './proceedDoc';
+import parseRss from './rssParser';
 import {
-  watchedForm, watchedFeedback, watchedRows, inputField, form,
+  state, watchedForm, watchedFeedback, watchedRows, inputField, form,
 } from './view';
 
-const rssUrls = [];
 const proxy = {
   url: () => 'cors-container.herokuapp.com',
 };
@@ -44,13 +42,15 @@ const checkDoc = (doc, url) => {
     watchedFeedback.value = parserError.textContent;
     watchedFeedback.textDanger = !watchedFeedback.textDanger;
   } else {
-    const { item, articles } = proceedDoc(doc);
+    const {
+      title, description, link, articles,
+    } = parseRss(doc);
     watchedRows.articles = { ...watchedRows.articles, [url]: articles };
-    if (!rssUrls.includes(url)) {
-      watchedRows.item = item;
+    if (!state.rssUrls.includes(url)) {
+      watchedRows.item = { title, description, link };
       watchedFeedback.textSuccess = !watchedFeedback.textSuccess;
       watchedForm.emptyInput = !watchedForm.emptyInput;
-      rssUrls.push(url);
+      state.rssUrls.push(url);
     }
   }
 };
@@ -59,18 +59,17 @@ const makeGetRequest = (url) => {
     timeout: 5000,
   })
     .then((response) => {
-      const doc = parse(response);
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(response.data, 'text/xml');
       checkDoc(doc, url);
+      watchedForm.submitButton = false;
+      if (state.rssUrls.includes(url)) {
+        setTimeout(() => makeGetRequest(url), 5000);
+      }
     })
     .catch((err) => {
       watchedFeedback.value = err.message;
       watchedFeedback.textDanger = !watchedFeedback.textDanger;
-    })
-    .then(() => {
-      watchedForm.submitButton = false;
-      if (rssUrls.includes(url)) {
-        setTimeout(() => makeGetRequest(url), 5000);
-      }
     });
 };
 export default () => {
@@ -82,7 +81,7 @@ export default () => {
     e.preventDefault();
     watchedForm.submitButton = true;
     const url = `https://${proxy.url()}/${inputField.value}`;
-    if (rssUrls.includes(url)) {
+    if (state.rssUrls.includes(url)) {
       watchedForm.submitButton = false;
       watchedForm.validStatus = false;
       watchedFeedback.textDanger = !watchedFeedback.textDanger;

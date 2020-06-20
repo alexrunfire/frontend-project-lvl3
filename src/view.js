@@ -1,21 +1,15 @@
 import i18next from 'i18next';
 import _ from 'lodash';
-import resources from './en';
+import resources from './locales/en';
 
 const onChange = require('on-change');
 
-const feedbackField = document.querySelector('.feedback');
 const [form] = document.forms;
 const inputField = form.querySelector('input');
 const submitButton = form.querySelector('button');
-const rssItems = document.querySelector('.rss-items');
+const feedbackField = document.querySelector('.feedback');
 const rssLinks = document.querySelector('.rss-links');
-
-i18next.init({
-  lng: 'en',
-  debug: true,
-  resources,
-});
+const rssItems = document.querySelector('.rss-items');
 
 const state = {
   form: {
@@ -33,7 +27,14 @@ const state = {
     item: null,
     articles: {},
   },
+  rssUrls: [],
 };
+
+i18next.init({
+  lng: 'en',
+  debug: true,
+  resources,
+});
 
 const getPreviousArticles = (object, key) => {
   if (_.has(object, key)) {
@@ -45,7 +46,7 @@ const getPreviousArticles = (object, key) => {
 const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
   (acc, currentArticles, key) => {
     const previousArticles = getPreviousArticles(previousValue, key);
-    const newArticles = _.differenceBy(currentArticles, previousArticles, 'id');
+    const newArticles = _.differenceBy(currentArticles, previousArticles, 'guid');
     if (!_.isEmpty(newArticles)) {
       return newArticles;
     }
@@ -53,12 +54,12 @@ const findNewArticles = (currentValue, previousValue) => _.reduce(currentValue,
   }, []);
 
 const makeElement = (article) => {
-  const { articleLink, articleTitle } = article;
+  const { link, title } = article;
   const div = document.createElement('div');
   const a = document.createElement('a');
-  a.setAttribute('href', articleLink);
+  a.setAttribute('href', link);
   a.classList.add('text-info');
-  a.textContent = articleTitle;
+  a.textContent = title;
   div.append(a);
   return div;
 };
@@ -90,7 +91,6 @@ const watchedForm = onChange(state.form, (path, value) => {
     inputField.value = '';
   }
 });
-
 const watchedFeedback = onChange(state.feedback, (path, value) => {
   if (path === 'value') {
     feedbackField.textContent = value;
@@ -107,11 +107,11 @@ const watchedFeedback = onChange(state.feedback, (path, value) => {
 });
 const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
   if (path === 'item') {
-    const { itemLink, itemTitle, description } = currentValue;
+    const { title, description, link } = currentValue;
     const div = document.createElement('div');
     const a = document.createElement('a');
-    a.setAttribute('href', itemLink);
-    a.textContent = `${itemTitle} (${description})`;
+    a.setAttribute('href', link);
+    a.textContent = `${title} (${description})`;
     div.append(a);
     rssItems.prepend(div);
   } else if (path === 'articles') {
@@ -119,5 +119,5 @@ const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) 
   }
 });
 export {
-  watchedForm, watchedFeedback, watchedRows, inputField, form,
+  state, watchedForm, watchedFeedback, watchedRows, inputField, form,
 };
