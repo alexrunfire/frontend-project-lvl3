@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import * as yup from 'yup';
 import axios from 'axios';
 import parseRss from './rssParser';
