@@ -6,7 +6,7 @@ import {
 } from './view';
 
 const proxy = {
-  url: () => 'cors-container.herokuapp.com',
+  url: () => 'cors-anywhere.herokuapp.com',
 };
 
 const schema = yup.object().shape({
