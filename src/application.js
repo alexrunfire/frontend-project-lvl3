@@ -70,8 +70,10 @@ const makeGetRequest = (url) => {
     .catch((err) => {
       watchedFailed.error = err.message;
     });
+  console.log('flex1');
+  console.log(state.rssUrls.includes(url));
   if (state.rssUrls.includes(url)) {
-    console.log('flex');
+    console.log('flex2');
     setTimeout(() => makeGetRequest(url), 5000);
   }
 };
