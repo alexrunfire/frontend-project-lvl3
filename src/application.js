@@ -2,12 +2,19 @@ import * as yup from 'yup';
 import axios from 'axios';
 import parseRss from './rssParser';
 import {
-  state, watchedForm, watchedFeedback, watchedRows, inputField, form,
+  state,
+  watchedFilling,
+  watchedFailed,
+  watchedProcessing,
+  watchedProcessed,
+  inputField,
+  form,
 } from './view';
 
 const proxy = {
   url: () => 'cors-anywhere.herokuapp.com',
 };
+const makeUrl = (url) => `https://${proxy.url()}/${url}`;
 
 const schema = yup.object().shape({
   url: yup.string().required().url(),
@@ -21,35 +28,32 @@ const validate = (url) => {
     return e.errors;
   }
 };
-
-const validateUrl = (url) => {
+const validateUniqUrl = (url) => {
   const errors = validate(url);
   if (errors.length === 0) {
-    watchedForm.submitButton = false;
-    watchedForm.validStatus = true;
-    watchedFeedback.value = '';
+    watchedFilling.valid = !watchedFilling.valid;
   } else {
-    watchedForm.submitButton = true;
-    watchedForm.validStatus = false;
-    const [error] = errors;
-    watchedFeedback.value = error;
-    watchedFeedback.textDanger = !watchedFeedback.textDanger;
+    watchedFilling.error = errors.error;
+  }
+};
+const validateUrl = (url) => {
+  if (state.rssUrls.includes(makeUrl(url))) {
+    watchedFilling.rssExists = !watchedFilling.rssExists;
+  } else {
+    validateUniqUrl(url);
   }
 };
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
-    watchedFeedback.value = parserError.textContent;
-    watchedFeedback.textDanger = !watchedFeedback.textDanger;
+    watchedFailed.error = parserError.textContent;
   } else {
     const {
       title, description, link, items,
     } = parseRss(doc);
-    watchedRows.items = { ...watchedRows.items, [url]: items };
+    watchedProcessed.items = { ...watchedProcessed.items, [url]: items };
     if (!state.rssUrls.includes(url)) {
-      watchedRows.head = { title, description, link };
-      watchedFeedback.textSuccess = !watchedFeedback.textSuccess;
-      watchedForm.emptyInput = !watchedForm.emptyInput;
+      watchedProcessed.head = { title, description, link };
       state.rssUrls.push(url);
     }
   }
@@ -62,15 +66,13 @@ const makeGetRequest = (url) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(response.data, 'text/xml');
       checkDoc(doc, url);
-      watchedForm.submitButton = false;
-      if (state.rssUrls.includes(url)) {
-        setTimeout(() => makeGetRequest(url), 5000);
-      }
     })
     .catch((err) => {
-      watchedFeedback.value = err.message;
-      watchedFeedback.textDanger = !watchedFeedback.textDanger;
+      watchedFailed.error = err.message;
     });
+  if (state.rssUrls.includes(url)) {
+    setTimeout(() => makeGetRequest(url), 5000);
+  }
 };
 export default () => {
   inputField.addEventListener('input', (e) => {
@@ -79,15 +81,7 @@ export default () => {
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    watchedForm.submitButton = true;
-    const url = `https://${proxy.url()}/${inputField.value}`;
-    if (state.rssUrls.includes(url)) {
-      watchedForm.submitButton = false;
-      watchedForm.validStatus = false;
-      watchedFeedback.textDanger = !watchedFeedback.textDanger;
-      watchedFeedback.rssExists = !watchedFeedback.rssExists;
-    } else {
-      makeGetRequest(url);
-    }
+    watchedProcessing.sending = !watchedProcessing.sending;
+    makeGetRequest(makeUrl(inputField.value));
   });
 };

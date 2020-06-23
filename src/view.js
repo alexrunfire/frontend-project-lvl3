@@ -8,24 +8,26 @@ const [form] = document.forms;
 const inputField = form.querySelector('input');
 const submitButton = form.querySelector('button');
 const feedbackField = document.querySelector('.feedback');
-const rssLinks = document.querySelector('.rss-links');
+const rssHeads = document.querySelector('.rss-heads');
 const rssItems = document.querySelector('.rss-items');
 
 const state = {
-  form: {
-    submitButton: null,
-    emptyInput: null,
-    validStatus: null,
-  },
-  feedback: {
-    value: null,
-    textDanger: null,
-    textSuccess: null,
-    rssExists: null,
-  },
-  rssRows: {
-    head: null,
-    items: {},
+  registrationProcesses: {
+    filling: {
+      valid: null,
+      error: null,
+      rssExists: null,
+    },
+    processing: {
+      sending: null,
+    },
+    processed: {
+      head: null,
+      items: {},
+    },
+    failed: {
+      error: null,
+    },
   },
   rssUrls: [],
 };
@@ -66,13 +68,13 @@ const makeElement = (item) => {
 
 const makeItems = (currentValue, previousValue) => {
   const newItems = findNewItems(currentValue, previousValue);
-  if (rssLinks.children.length === 0) {
+  if (rssItems.children.length === 0) {
     newItems.forEach((item) => {
       const element = makeElement(item);
-      rssLinks.append(element);
+      rssItems.append(element);
     });
   } else {
-    const { firstChild } = rssLinks;
+    const { firstChild } = rssItems;
     newItems.forEach((item) => {
       const element = makeElement(item);
       firstChild.before(element);
@@ -80,44 +82,71 @@ const makeItems = (currentValue, previousValue) => {
   }
 };
 
-const watchedForm = onChange(state.form, (path, value) => {
-  if (path === 'submitButton') {
-    submitButton.disabled = value;
-  } else if (path === 'validStatus' && !value) {
-    inputField.classList.add('is-invalid');
-  } else if (path === 'validStatus' && value) {
-    inputField.classList.remove('is-invalid');
-  } else if (path === 'emptyInput') {
-    inputField.value = '';
-  }
+const makeHead = ({ title, description, link }) => {
+  const div = document.createElement('div');
+  const a = document.createElement('a');
+  a.setAttribute('href', link);
+  a.textContent = `${title} (${description})`;
+  div.append(a);
+  rssHeads.prepend(div);
+};
+
+const enableItems = () => {
+  submitButton.disabled = false;
+  inputField.disabled = false;
+};
+const watchedProcessed = onChange(state.registrationProcesses.processed,
+  (path, currentValue, previousValue) => {
+    if (path === 'head') {
+      enableItems();
+      feedbackField.classList.add('text-success');
+      feedbackField.textContent = i18next.t('rssLoaded');
+      inputField.value = '';
+      makeHead(currentValue);
+    } else if (path === 'items') {
+      makeItems(currentValue, previousValue);
+    }
+  });
+
+const watchedFailed = onChange(state.registrationProcesses.failed, (_path, value) => {
+  enableItems();
+  feedbackField.classList.add('text-danger');
+  feedbackField.textContent = value;
 });
-const watchedFeedback = onChange(state.feedback, (path, value) => {
-  if (path === 'value') {
+const watchedProcessing = onChange(state.registrationProcesses.processing, () => {
+  submitButton.disabled = true;
+  inputField.disabled = true;
+  feedbackField.textContent = '';
+});
+
+const makeInvalid = () => {
+  submitButton.disabled = true;
+  inputField.classList.add('is-invalid');
+  feedbackField.classList.add('text-danger');
+};
+
+const watchedFilling = onChange(state.registrationProcesses.filling, (path, value) => {
+  feedbackField.classList.remove('text-success');
+  if (path === 'error') {
+    makeInvalid();
     feedbackField.textContent = value;
-  } else if (path === 'textDanger') {
-    feedbackField.classList.remove('text-success');
-    feedbackField.classList.add('text-danger');
-  } else if (path === 'textSuccess') {
-    feedbackField.classList.remove('text-danger');
-    feedbackField.classList.add('text-success');
-    feedbackField.textContent = i18next.t('rssLoaded');
   } else if (path === 'rssExists') {
+    makeInvalid();
     feedbackField.textContent = i18next.t('rssExists');
+  } else if (path === 'valid') {
+    submitButton.disabled = false;
+    feedbackField.textContent = '';
+    inputField.classList.remove('is-invalid');
+    feedbackField.classList.remove('text-danger');
   }
 });
-const watchedRows = onChange(state.rssRows, (path, currentValue, previousValue) => {
-  if (path === 'head') {
-    const { title, description, link } = currentValue;
-    const div = document.createElement('div');
-    const a = document.createElement('a');
-    a.setAttribute('href', link);
-    a.textContent = `${title} (${description})`;
-    div.append(a);
-    rssItems.prepend(div);
-  } else if (path === 'items') {
-    makeItems(currentValue, previousValue);
-  }
-});
+
 export {
-  state, watchedForm, watchedFeedback, watchedRows, inputField, form,
+  state,
+  watchedFilling,
+  watchedFailed,
+  watchedProcessing,
+  watchedProcessed,
+  inputField,
+  form,
 };
