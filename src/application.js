@@ -33,7 +33,6 @@ const validateUniqUrl = (url) => {
   if (errors.length === 0) {
     watchedFilling.valid = !watchedFilling.valid;
   } else {
-    console.log(errors);
     watchedFilling.error = errors;
   }
 };
@@ -72,6 +71,7 @@ const makeGetRequest = (url) => {
       watchedFailed.error = err.message;
     });
   if (state.rssUrls.includes(url)) {
+    console.log('flex');
     setTimeout(() => makeGetRequest(url), 5000);
   }
 };
