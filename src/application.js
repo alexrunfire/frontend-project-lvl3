@@ -33,6 +33,7 @@ const validateUniqUrl = (url) => {
   if (errors.length === 0) {
     watchedFilling.valid = !watchedFilling.valid;
   } else {
+    console.log(errors.error);
     watchedFilling.error = errors.error;
   }
 };
