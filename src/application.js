@@ -23,8 +23,7 @@ const validate = (url) => {
 const validateUniqUrl = (url) => {
   const errors = validate(url);
   if (errors.length === 0) {
-    const lastBoolean = render.filling.valid;
-    render.filling.valid = !lastBoolean;
+    render.filling.valid = true;
   } else {
     render.filling.error = [errors];
   }

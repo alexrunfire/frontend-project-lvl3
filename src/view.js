@@ -150,10 +150,12 @@ function Render(filling, processing, failed, processed, rssUrls, input, formFiel
   this.inputField = input;
   this.form = formFieled;
 }
-export default new Render(watchedFilling,
+export default new Render(
+  watchedFilling,
   watchedProcessing,
   watchedFailed,
   watchedProcessed,
   state.rssUrls,
   inputField,
-  form);
+  form,
+);
