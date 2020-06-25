@@ -108,10 +108,9 @@ const watchedProcessed = onChange(state.registrationProcesses.processed,
     }
   });
 
-const watchedFailed = onChange(state.registrationProcesses.failed, (_path, value) => {
+const watchedFailed = onChange(state.registrationProcesses.failed, (_path, [error]) => {
   enableItems();
   feedbackField.classList.add('text-danger');
-  const [error] = value;
   feedbackField.textContent = error;
 });
 const watchedProcessing = onChange(state.registrationProcesses.processing, () => {
