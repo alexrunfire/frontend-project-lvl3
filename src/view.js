@@ -99,11 +99,13 @@ const watchedProcessed = onChange(state.registrationProcesses.processed,
   (path, currentValue, previousValue) => {
     if (path === 'head') {
       enableItems();
+      feedbackField.classList.remove('text-danger');
       feedbackField.classList.add('text-success');
       feedbackField.textContent = i18next.t('rssLoaded');
       inputField.value = '';
       makeHead(currentValue);
     } else if (path === 'items') {
+      feedbackField.textContent = '';
       makeItems(currentValue, previousValue);
     }
   });

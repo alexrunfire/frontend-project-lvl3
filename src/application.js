@@ -37,19 +37,24 @@ const validateUrl = (url) => {
     validateUniqUrl(url);
   }
 };
+
+const makeElements = (rssDoc, url) => {
+  const {
+    title, description, link, items,
+  } = parseRss(rssDoc);
+  render.processed.items = { ...render.processed.items, [url]: items };
+  if (!render.rssUrls.includes(url)) {
+    render.processed.head = { title, description, link };
+    render.rssUrls.push(url);
+  }
+};
+
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
     render.failed.error = [parserError.textContent];
   } else {
-    const {
-      title, description, link, items,
-    } = parseRss(doc);
-    render.processed.items = { ...render.processed.items, [url]: items };
-    if (!render.rssUrls.includes(url)) {
-      render.processed.head = { title, description, link };
-      render.rssUrls.push(url);
-    }
+    makeElements(doc, url);
   }
 };
 const makeGetRequest = (url) => {
