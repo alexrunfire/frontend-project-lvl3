@@ -134,6 +134,7 @@ const watchedFilling = onChange(state.registrationProcesses.filling, (path, [err
     makeInvalid();
     feedbackField.textContent = i18next.t('rssExists');
   } else if (path === 'valid') {
+    console.log(error);
     submitButton.disabled = false;
     feedbackField.textContent = '';
     inputField.classList.remove('is-invalid');
