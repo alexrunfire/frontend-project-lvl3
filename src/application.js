@@ -6,7 +6,7 @@ import render from './view';
 const { inputField, form } = render;
 
 const proxy = {
-  url: () => 'cors-anywhere.herokuapp.com',
+  url: () => 'cors-container.herokuapp.com',
 };
 const makeUrl = (url) => `https://${proxy.url()}/${url}`;
 
