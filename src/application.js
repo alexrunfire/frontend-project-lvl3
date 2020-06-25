@@ -3,6 +3,8 @@ import axios from 'axios';
 import parseRss from './rssParser';
 import render from './view';
 
+const { inputField, form } = render;
+
 const proxy = {
   url: () => 'cors-anywhere.herokuapp.com',
 };
@@ -70,13 +72,13 @@ const makeGetRequest = (url) => {
   }
 };
 export default () => {
-  render.inputField.addEventListener('input', (e) => {
+  inputField.addEventListener('input', (e) => {
     e.preventDefault();
     validateUrl(e.target.value);
   });
-  render.form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     render.processing.sending = !render.processing.sending;
-    makeGetRequest(makeUrl(render.inputField.value));
+    makeGetRequest(makeUrl(inputField.value));
   });
 };
