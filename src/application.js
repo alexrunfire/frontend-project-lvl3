@@ -46,7 +46,7 @@ const validateUrl = (url) => {
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
-    watchedFailed.error = parserError.textContent;
+    watchedFailed.error = [parserError.textContent];
   } else {
     const {
       title, description, link, items,
@@ -68,7 +68,7 @@ const makeGetRequest = (url) => {
       checkDoc(doc, url);
     })
     .catch((err) => {
-      watchedFailed.error = err.message;
+      watchedFailed.error = [err.message];
     });
   console.log('flex1');
   console.log(state.rssUrls.includes(url));

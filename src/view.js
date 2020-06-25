@@ -111,7 +111,8 @@ const watchedProcessed = onChange(state.registrationProcesses.processed,
 const watchedFailed = onChange(state.registrationProcesses.failed, (_path, value) => {
   enableItems();
   feedbackField.classList.add('text-danger');
-  feedbackField.textContent = value;
+  const [error] = value;
+  feedbackField.textContent = error;
 });
 const watchedProcessing = onChange(state.registrationProcesses.processing, () => {
   submitButton.disabled = true;
