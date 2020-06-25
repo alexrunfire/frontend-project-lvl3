@@ -125,11 +125,11 @@ const makeInvalid = () => {
   feedbackField.classList.add('text-danger');
 };
 
-const watchedFilling = onChange(state.registrationProcesses.filling, (path, value) => {
+const watchedFilling = onChange(state.registrationProcesses.filling, (path, [error]) => {
   feedbackField.classList.remove('text-success');
   if (path === 'error') {
     makeInvalid();
-    feedbackField.textContent = value;
+    feedbackField.textContent = error;
   } else if (path === 'rssExists') {
     makeInvalid();
     feedbackField.textContent = i18next.t('rssExists');
@@ -141,12 +141,19 @@ const watchedFilling = onChange(state.registrationProcesses.filling, (path, valu
   }
 });
 
-export {
-  state,
-  watchedFilling,
-  watchedFailed,
+function Render(filling, processing, failed, processed, rssUrls, input, formFieled) {
+  this.filling = filling;
+  this.processing = processing;
+  this.failed = failed;
+  this.processed = processed;
+  this.rssUrls = rssUrls;
+  this.inputField = input;
+  this.form = formFieled;
+}
+export default new Render(watchedFilling,
   watchedProcessing,
+  watchedFailed,
   watchedProcessed,
+  state.rssUrls,
   inputField,
-  form,
-};
+  form);

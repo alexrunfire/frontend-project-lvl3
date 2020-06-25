@@ -1,15 +1,7 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import parseRss from './rssParser';
-import {
-  state,
-  watchedFilling,
-  watchedFailed,
-  watchedProcessing,
-  watchedProcessed,
-  inputField,
-  form,
-} from './view';
+import render from './view';
 
 const proxy = {
   url: () => 'cors-anywhere.herokuapp.com',
@@ -31,14 +23,14 @@ const validate = (url) => {
 const validateUniqUrl = (url) => {
   const errors = validate(url);
   if (errors.length === 0) {
-    watchedFilling.valid = !watchedFilling.valid;
+    render.filling.valid = !render.filling.valid;
   } else {
-    watchedFilling.error = errors;
+    render.filling.error = [errors];
   }
 };
 const validateUrl = (url) => {
-  if (state.rssUrls.includes(makeUrl(url))) {
-    watchedFilling.rssExists = !watchedFilling.rssExists;
+  if (render.rssUrls.includes(makeUrl(url))) {
+    render.filling.rssExists = !render.filling.rssExists;
   } else {
     validateUniqUrl(url);
   }
@@ -46,15 +38,15 @@ const validateUrl = (url) => {
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
-    watchedFailed.error = [parserError.textContent];
+    render.failed.error = [parserError.textContent];
   } else {
     const {
       title, description, link, items,
     } = parseRss(doc);
-    watchedProcessed.items = { ...watchedProcessed.items, [url]: items };
-    if (!state.rssUrls.includes(url)) {
-      watchedProcessed.head = { title, description, link };
-      state.rssUrls.push(url);
+    render.processed.items = { ...render.processed.items, [url]: items };
+    if (!render.rssUrls.includes(url)) {
+      render.processed.head = { title, description, link };
+      render.rssUrls.push(url);
     }
   }
 };
@@ -68,23 +60,23 @@ const makeGetRequest = (url) => {
       checkDoc(doc, url);
     })
     .catch((err) => {
-      watchedFailed.error = [err.message];
+      render.failed.error = [err.message];
     });
   console.log('flex1');
-  console.log(state.rssUrls.includes(url));
-  if (state.rssUrls.includes(url)) {
+  console.log(render.rssUrls.includes(url));
+  if (render.rssUrls.includes(url)) {
     console.log('flex2');
     setTimeout(() => makeGetRequest(url), 5000);
   }
 };
 export default () => {
-  inputField.addEventListener('input', (e) => {
+  render.inputField.addEventListener('input', (e) => {
     e.preventDefault();
     validateUrl(e.target.value);
   });
-  form.addEventListener('submit', (e) => {
+  render.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    watchedProcessing.sending = !watchedProcessing.sending;
-    makeGetRequest(makeUrl(inputField.value));
+    render.processing.sending = !render.processing.sending;
+    makeGetRequest(makeUrl(render.inputField.value));
   });
 };
