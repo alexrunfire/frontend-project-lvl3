@@ -64,12 +64,11 @@ const makeGetRequest = (url) => {
     .catch((err) => {
       render.failed.error = [err.message];
     });
-  console.log('flex1');
-  console.log(render.rssUrls.includes(url));
-  if (render.rssUrls.includes(url)) {
-    console.log('flex2');
-    setTimeout(() => makeGetRequest(url), 5000);
-  }
+  setTimeout(() => {
+    if (render.rssUrls.includes(url)) {
+      makeGetRequest(url);
+    }
+  }, 5000);
 };
 export default () => {
   inputField.addEventListener('input', (e) => {
