@@ -38,21 +38,11 @@ i18next.init({
   resources,
 });
 
-const getPreviousArticles = (object, key) => {
-  if (_.has(object, key)) {
-    return object[key];
-  }
-  return [];
-};
-
 const findNewItems = (currentValue, previousValue) => _.reduce(currentValue,
   (acc, currentItems, key) => {
-    const previousItems = getPreviousArticles(previousValue, key);
+    const { [key]: previousItems = [] } = previousValue;
     const newItems = _.differenceBy(currentItems, previousItems, 'guid');
-    if (!_.isEmpty(newItems)) {
-      return newItems;
-    }
-    return acc;
+    return _.isEmpty(newItems) ? acc : newItems;
   }, []);
 
 const makeElement = (item) => {
