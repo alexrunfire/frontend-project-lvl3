@@ -134,14 +134,14 @@ const watchedFilling = onChange(state.registrationProcesses.filling, (path, valu
   }
 });
 
-function Render(filling, processing, failed, processed, rssUrls, input, formFieled) {
-  this.filling = filling;
-  this.processing = processing;
-  this.failed = failed;
-  this.processed = processed;
+function Render(filling, processing, failed, processed, rssUrls, input, formElement) {
+  this.watchedFilling = filling;
+  this.watchedProcessing = processing;
+  this.watchedFailed = failed;
+  this.watchedProcessed = processed;
   this.rssUrls = rssUrls;
   this.inputField = input;
-  this.form = formFieled;
+  this.form = formElement;
 }
 export default new Render(
   watchedFilling,

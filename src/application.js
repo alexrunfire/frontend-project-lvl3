@@ -3,7 +3,15 @@ import axios from 'axios';
 import parseRss from './rssParser';
 import render from './view';
 
-const { inputField, form } = render;
+const {
+  watchedFilling,
+  watchedProcessing,
+  watchedFailed,
+  watchedProcessed,
+  rssUrls,
+  inputField,
+  form,
+} = render;
 
 const proxy = {
   url: () => 'cors-container.herokuapp.com',
@@ -25,14 +33,14 @@ const validate = (url) => {
 const validateUniqUrl = (url) => {
   const errors = validate(url);
   if (errors.length === 0) {
-    render.filling.valid = !render.filling.valid;
+    watchedFilling.valid = !watchedFilling.valid;
   } else {
-    render.filling.error = [errors];
+    watchedFilling.error = [errors];
   }
 };
 const validateUrl = (url) => {
-  if (render.rssUrls.includes(makeUrl(url))) {
-    render.filling.rssExists = !render.filling.rssExists;
+  if (rssUrls.includes(makeUrl(url))) {
+    watchedFilling.rssExists = !watchedFilling.rssExists;
   } else {
     validateUniqUrl(url);
   }
@@ -42,17 +50,17 @@ const makeElements = (rssDoc, url) => {
   const {
     title, description, link, items,
   } = parseRss(rssDoc);
-  render.processed.items = { ...render.processed.items, [url]: items };
-  if (!render.rssUrls.includes(url)) {
-    render.processed.head = { title, description, link };
-    render.rssUrls.push(url);
+  watchedProcessed.items = { ...watchedProcessed.items, [url]: items };
+  if (!rssUrls.includes(url)) {
+    watchedProcessed.head = { title, description, link };
+    rssUrls.push(url);
   }
 };
 
 const checkDoc = (doc, url) => {
   const parserError = doc.querySelector('parsererror');
   if (parserError) {
-    render.failed.error = [parserError.textContent];
+    watchedFailed.error = [parserError.textContent];
   } else {
     makeElements(doc, url);
   }
@@ -67,10 +75,10 @@ const makeGetRequest = (url) => {
       checkDoc(doc, url);
     })
     .catch((err) => {
-      render.failed.error = [err.message];
+      watchedFailed.error = [err.message];
     });
   setTimeout(() => {
-    if (render.rssUrls.includes(url)) {
+    if (rssUrls.includes(url)) {
       makeGetRequest(url);
     }
   }, 5000);
@@ -82,7 +90,7 @@ export default () => {
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    render.processing.sending = !render.processing.sending;
+    watchedProcessing.sending = !watchedProcessing.sending;
     makeGetRequest(makeUrl(inputField.value));
   });
 };
