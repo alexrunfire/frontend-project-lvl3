@@ -95,7 +95,6 @@ const watchedProcessed = onChange(state.registrationProcesses.processed,
       inputField.value = '';
       makeHead(currentValue);
     } else if (path === 'items') {
-      feedbackField.textContent = '';
       makeItems(currentValue, previousValue);
     }
   });
