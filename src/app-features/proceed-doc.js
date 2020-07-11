@@ -9,6 +9,6 @@ export default (rssDoc, url) => {
   watchedProcessed().items = { ...watchedProcessed().items, [url]: items };
   if (!state.rssUrls.includes(url)) {
     watchedProcessed().head = { title, description, link };
-    state.rssUrls.push(url);
+    state.rssUrls = [...state.rssUrls, url];
   }
 };
