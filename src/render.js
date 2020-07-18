@@ -1,49 +1,26 @@
 import i18next from 'i18next';
-import resources from './locales/en';
 import state from './state';
-import inputField from './components/input-field';
-import createRssHeaders from './render-features/create-rss-headers';
-import createRssItems from './render-features/create-rss-items';
-import submitButton from './components/submit-button';
-import feedbackField from './components/feedback-field';
+import {
+  submitButton, inputField, feedbackField,
+} from './fields';
+import {
+  onFillingError,
+  onFillingValid,
+  makeItems,
+  makeHead,
+  enableForm,
+} from './render-cases';
 
 const onChange = require('on-change');
 
-i18next.init({
-  lng: 'en',
-  debug: true,
-  resources,
-});
-
-const enableForm = () => {
-  submitButton().disabled = false;
-  inputField().disabled = false;
-};
-
-const makeInvalidForm = () => {
-  submitButton().disabled = true;
-  inputField().classList.add('is-invalid');
-  feedbackField().classList.add('text-danger');
-};
-
+const processedCases = { head: makeHead, items: makeItems };
 const watchedProcessed = () => onChange(state.registrationProcesses.processed,
-  (path, currentValue, previousValue) => {
-    if (path === 'head') {
-      enableForm();
-      feedbackField().classList.remove('text-danger');
-      feedbackField().classList.add('text-success');
-      feedbackField().textContent = i18next.t('rssLoaded');
-      inputField().value = '';
-      createRssHeaders(currentValue);
-    } else if (path === 'items') {
-      createRssItems(currentValue, previousValue);
-    }
-  });
+  (path, currentValue, previousValue) => { processedCases[path](currentValue, previousValue); });
 
 const watchedFailed = () => onChange(state.registrationProcesses.failed, (_path, [error]) => {
   enableForm();
   feedbackField().classList.add('text-danger');
-  feedbackField().textContent = error;
+  feedbackField().textContent = i18next.t(error);
 });
 
 const watchedProcessing = () => onChange(state.registrationProcesses.processing, () => {
@@ -52,21 +29,11 @@ const watchedProcessing = () => onChange(state.registrationProcesses.processing,
   feedbackField().textContent = '';
 });
 
+const fillingCases = { error: onFillingError, valid: onFillingValid };
+
 const watchedFilling = () => onChange(state.registrationProcesses.filling, (path, value) => {
   feedbackField().classList.remove('text-success');
-  if (path === 'error') {
-    makeInvalidForm();
-    const [error] = value;
-    feedbackField().textContent = error;
-  } else if (path === 'rssExists') {
-    makeInvalidForm();
-    feedbackField().textContent = i18next.t('rssExists');
-  } else if (path === 'valid') {
-    submitButton().disabled = false;
-    feedbackField().textContent = '';
-    inputField().classList.remove('is-invalid');
-    feedbackField().classList.remove('text-danger');
-  }
+  fillingCases[path](value);
 });
 
 export {
