@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const proxy = {
-  url: () => 'cors-container.herokuapp.com',
-};
-const makeFullUrl = (url) => `https://${proxy.url()}/${url}`;
+const proxy = 'cors-container.herokuapp.com';
+const makeFullUrl = (url) => `https://${proxy}/${url}`;
 
 const timeout = 5000;
 

@@ -1,9 +1,10 @@
 import * as yup from 'yup';
 
-export default (url, arrayOfValues) => {
+export default (url, items) => {
+  const usedUrls = Object.keys(items);
   const schema = yup.string().required('empty')
     .url('invalid')
-    .notOneOf(arrayOfValues, 'exists');
+    .notOneOf(usedUrls, 'exists');
   try {
     schema.validateSync(url);
     return [];

@@ -1,12 +1,10 @@
 import i18next from 'i18next';
+import { has } from 'lodash';
 import resources from './locales';
-import parseRss from './rss-parser';
+import parse from './rss-parser';
 import validate from './validation';
 import makeRequest from './make-request';
-import {
-  watchedProcessing, watchedFilling, watchedFailed, watchedProcessed,
-} from './render';
-import state from './state';
+import watchedState from './render';
 import {
   inputField, form,
 } from './fields';
@@ -14,46 +12,49 @@ import {
 const timeout = 5000;
 
 const validateUrl = (url) => {
-  const errors = validate(url, state.rssUrls);
-  if (errors.length === 0) {
-    watchedFilling().valid = !watchedFilling().valid;
+  const errors = validate(url, watchedState().items);
+  if (errors.length) {
+    watchedState().registrationProcess.state = 'fillingInvalid';
+    watchedState().registrationProcess.error = errors;
   } else {
-    watchedFilling().error = errors;
+    watchedState().registrationProcess.state = 'fillingValid';
   }
 };
 
-const proceedDoc = (doc, url) => {
+const addItemsToState = (url, items) => {
+  watchedState().items = { ...watchedState().items, [url]: items };
+};
+
+const proceedRssData = (rssData, url) => {
   const {
     title, description, link, items,
-  } = parseRss(doc);
-  watchedProcessed().items = { ...watchedProcessed().items, [url]: items };
-  if (!state.rssUrls.includes(url)) {
-    watchedProcessed().head = { title, description, link };
-    state.rssUrls = [...state.rssUrls, url];
-  }
-};
-
-const checkDoc = (doc, url) => {
-  const parserError = doc.querySelector('parsererror');
-  if (parserError) {
-    watchedFailed().error = ['renderProblem'];
+  } = rssData;
+  if (!has(watchedState().items, url)) {
+    watchedState().registrationProcess.state = 'processed';
+    watchedState().head = { title, description, link };
+    addItemsToState(url, items);
   } else {
-    proceedDoc(doc, url);
+    addItemsToState(url, items);
   }
 };
 
 const makeGetRequest = (url) => {
   makeRequest(url)
-    .then((response) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(response.data, 'text/xml');
-      checkDoc(doc, url);
+    .then(({ data }) => {
+      try {
+        const rssData = parse(data);
+        proceedRssData(rssData, url);
+      } catch (e) {
+        watchedState().registrationProcess.state = 'failed';
+        watchedState().registrationProcess.error = ['renderProblem'];
+      }
     })
     .catch(() => {
-      watchedFailed().error = ['networkProblem'];
+      watchedState().registrationProcess.state = 'failed';
+      watchedState().registrationProcess.error = ['networkProblem'];
     });
   setTimeout(() => {
-    if (state.rssUrls.includes(url)) {
+    if (has(watchedState().items, url)) {
       makeGetRequest(url);
     }
   }, timeout);
@@ -71,7 +72,7 @@ export default () => {
   });
   form().addEventListener('submit', (e) => {
     e.preventDefault();
-    watchedProcessing().sending = !watchedProcessing().sending;
+    watchedState().registrationProcess.state = 'processing';
     makeGetRequest(inputField().value);
   });
 };

@@ -1,5 +1,5 @@
 {
-  "name": "frontend-project-lvl3",
+  "name": "RSS-reader",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -11,14 +11,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexrunfire/frontend-project-lvl3.git"
+    "url": "git+https://github.com/alexrunfire/RSS-reader.git"
   },
   "author": "Alexey Makarov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/alexrunfire/frontend-project-lvl3/issues"
+    "url": "https://github.com/alexrunfire/RSS-reader/issues"
   },
-  "homepage": "https://github.com/alexrunfire/frontend-project-lvl3#readme",
+  "homepage": "https://github.com/alexrunfire/RSS-reader#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",

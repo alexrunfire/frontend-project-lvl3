@@ -5,19 +5,17 @@ const makeArticle = (item) => {
   return { title, link, guid };
 };
 
-export default (rssDoc) => {
-  try {
-    const title = rssDoc.querySelector('title').textContent;
-    const description = rssDoc.querySelector('description').textContent;
-    const link = rssDoc.querySelector('link').textContent;
-    const items = [...rssDoc.querySelectorAll('item')].map(makeArticle);
-    return {
-      title,
-      description,
-      link,
-      items,
-    };
-  } catch (e) {
-    throw new Error('This is not RSS format.');
-  }
+export default (data) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(data, 'text/xml');
+  const title = doc.querySelector('title').textContent;
+  const description = doc.querySelector('description').textContent;
+  const link = doc.querySelector('link').textContent;
+  const items = [...doc.querySelectorAll('item')].map(makeArticle);
+  return {
+    title,
+    description,
+    link,
+    items,
+  };
 };
